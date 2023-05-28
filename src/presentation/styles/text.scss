@@ -1,0 +1,14 @@
+$color-map: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "danger": $danger,
+  "info": $info,
+  "light": $light,
+  "dark": $dark
+);
+
+@each $key, $value in $color-map {
+  .txt-c-#{$key} {
+    color: $value;
+  }
+}

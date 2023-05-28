@@ -1,0 +1,30 @@
+$color-map: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "danger": $danger,
+  "info": $info,
+  "light": $light,
+  "dark": $dark,
+  "muted": $muted
+);
+
+button, a {
+  display: inline-block;
+  border: none;
+  border-radius: $base-border-radius;
+  text-decoration: none;
+  cursor: pointer;
+
+  @each $key, $value in $color-map {
+    &.btn-#{$key} {
+      border: $base-border-thickness solid $primary;
+      background-color: $value;
+    }
+
+    &.btn-outline-#{$key} {
+      border: $base-border-thickness solid $value;
+      color: $value;
+      background-color: transparent;
+    }
+  }
+}

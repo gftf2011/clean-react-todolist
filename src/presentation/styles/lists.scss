@@ -1,0 +1,14 @@
+ul, ol {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .column {
+    flex-direction: column;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+}
