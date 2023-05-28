@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Rock+Salt&family=Shadows+Into+Light&display=swap');
+
+header {
+  padding: 8px 12px;
+  font-family: 'Rock Salt', cursive;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #f0f0fa;
+}
+
+main {
+  margin-top: 32px;
+  width: 100vw;
+  font-family: 'Rock Salt', cursive;
+}
+
+main > section {
+  margin: 0 auto;
+  padding: 0 16px;;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1280px;
+}
+
+main > section > img {
+  width: 100%;
+  margin-top: 24px;
+}
+
+main > section > h2 {
+  text-align: center;
+  font-size: 16px;
+}
+
+header a {
+  display: block;
+  border-radius: 4px;
+  text-align: center;
+}
+
+header > div.container {
+  width: inherit;
+  max-width: 1280px;
+  display: grid;
+  grid-template-areas:
+    'logo actions'
+    'dropdown-actions dropdown-actions';
+}
+
+header > div.container > nav {
+  display: inline;
+  grid-area: dropdown-actions;
+}
+
+header > div.container > nav > ul {
+  display: flex;
+  flex-direction: column;
+}
+
+header > div.container > nav > ul > li {
+  margin-top: 8px;
+  width: inherit;
+}
+
+div.logo {
+  width: 168px;
+  margin-right: auto;
+  grid-area: logo;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+div.actions {
+  margin-left: auto;
+  grid-area: actions;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+div.actions > button.dropdown-menu-btn {
+  border-radius: 4px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1ca4c9;
+  color: #ffffff;
+}
+
+div.actions > nav {
+  display: none;
+}
+
+a.sign-in {
+  padding: 0 12px;
+  border: 2px solid #1ca4c9;
+  background-color: transparent;
+  color: #1ca4c9 !important;
+}
+
+a.sign-up {
+  padding: 0 12px;
+  border: 2px solid #1ca4c9;
+  background-color: #1ca4c9;
+  color: #ffffff !important;
+}
+
+@media (min-width: 768px) {
+  main {
+    margin-top: 64px;
+  }
+
+  main > section > h2 {
+    font-size: 24px;
+  }
+
+  header > div.container > nav {
+    display: none;
+  }
+
+  div.actions > button.dropdown-menu-btn {
+    display: none;
+  }
+
+  div.actions > nav {
+    display: inline;
+  }
+
+  div.actions > nav > ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+  
+  div.actions > nav > ul > li {
+    margin-left: 8px;
+  }
+}
