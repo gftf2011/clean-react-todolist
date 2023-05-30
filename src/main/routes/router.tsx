@@ -1,16 +1,23 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import { makeHome } from '@/main/factories'
+import { makeHome, makeSignIn } from '@/main/factories/presentation'
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: makeHome({}),
+  },
+  {
+    path: "/sign-in",
+    element: makeSignIn({}),
+  },
+]);
 
 export const Router: React.FC = () => {
   return (
     <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" Component={makeHome} />
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </React.StrictMode>
   )
 }

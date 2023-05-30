@@ -1,52 +1,10 @@
-header {
-  border-bottom: 1px solid $muted;
-}
-
-h1, h2, a {
-  font-family: 'Rock Salt', cursive;
-}
-
-a {
-  font-size: 0.75rem;
-}
-
 main {
-  height: calc(100vh - 72px);
-
   section {
-    height: inherit;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
 
     h2 {
       font-size: 1.5rem;
     }
-  }
-}
-
-#desktop-actions {
-  display: block;
-}
-
-#mobile-actions {
-  display: none;
-}
-
-#mobile-dropdown {
-  display: none;
-}
-
-div.logo-container {
-  width: 11rem;
-  margin-right: auto;
-
-  img {
-    height: 3rem;
-  }
-
-  h1 {
-    margin-left: $base-margin;
-    font-size: 1rem;
   }
 }
 
@@ -58,16 +16,14 @@ div.logo-container {
       }
     }
   }
+}
 
-  #desktop-actions {
-    display: none;
-  }
-
-  #mobile-actions {
-    display: flex;
-  }
-
-  #mobile-dropdown {
-    display: block;
+@media (max-width: $xs) {
+  main {
+   section {
+      h2 {
+        font-size: 1rem;
+      }
+    }
   }
 }

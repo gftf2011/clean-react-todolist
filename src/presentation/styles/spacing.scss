@@ -1,6 +1,13 @@
 $pad-list: $xs-padding, $sm-padding, $base-padding, $lg-padding, $xl-padding, $xxl-padding;
 $mar-list: $xs-margin, $sm-margin, $base-margin, $lg-margin, $xl-margin, $xxl-margin;
 
+$mar-max-directions-map: (
+  "t": top,
+  "l": left,
+  "r": right,
+  "b": bottom
+);
+
 // height
 @for $a from 1 through 100 {
   .vh-#{$a} {
@@ -87,5 +94,11 @@ $mar-list: $xs-margin, $sm-margin, $base-margin, $lg-margin, $xl-margin, $xxl-ma
 
   .mr-#{$j} {
     margin-right: nth($mar-list, $j);
+  }
+}
+
+@each $key, $value in $mar-max-directions-map {
+  .m#{$key}-max {
+    margin-#{$value}: auto;
   }
 }

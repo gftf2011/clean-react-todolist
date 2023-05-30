@@ -1,0 +1,34 @@
+header {
+  border-bottom: 1px solid $muted;
+}
+
+a {
+  font-family: 'Rock Salt', cursive;
+  font-size: 0.75rem;
+}
+
+#desktop-actions {
+  display: block;
+}
+
+#mobile-actions {
+  display: none;
+}
+
+#mobile-dropdown {
+  display: none;
+}
+
+@media (max-width: $sm) {
+  #desktop-actions {
+    display: none;
+  }
+
+  #mobile-actions {
+    display: flex;
+  }
+
+  #mobile-dropdown {
+    display: block;
+  }
+}
