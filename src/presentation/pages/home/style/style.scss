@@ -1,29 +1,11 @@
 main {
-  section {
-    margin: auto;
+  height: calc(100% - 72px);
 
-    h2 {
-      font-size: 1.5rem;
-    }
+  &.navigation-expanded {
+    height: calc(100% - 130px);
   }
 }
 
-@media (max-width: $sm) {
-  main {
-   section {
-      h2 {
-        font-size: 1.25rem;
-      }
-    }
-  }
-}
-
-@media (max-width: $xs) {
-  main {
-   section {
-      h2 {
-        font-size: 1rem;
-      }
-    }
-  }
+img {
+  object-fit: contain;
 }

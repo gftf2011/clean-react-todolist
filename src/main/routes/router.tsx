@@ -1,9 +1,9 @@
 import React from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { makeHome, makeSignIn } from '@/main/factories/presentation'
+import { ReduxRouterDomProvider } from '@/main/adapters'
 
-const router = createBrowserRouter([
+const routes = [
   {
     path: "/",
     element: makeHome({}),
@@ -12,12 +12,12 @@ const router = createBrowserRouter([
     path: "/sign-in",
     element: makeSignIn({}),
   },
-]);
+]
 
 export const Router: React.FC = () => {
   return (
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <ReduxRouterDomProvider routes={routes} />
     </React.StrictMode>
   )
 }
