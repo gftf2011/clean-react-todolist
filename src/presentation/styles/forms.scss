@@ -1,0 +1,48 @@
+$pad-map: (
+  "xs": 0.375rem,
+  "sm": 0.5rem,
+  "md": 0.625rem,
+  "lg": 0.75rem,
+  "xl": 1rem,
+  "xxl": 1.25rem
+);
+
+$font-size-map: (
+  "xs": 0.75rem,
+  "sm": 0.875rem,
+  "md": 1rem,
+  "lg": 1.125rem,
+  "xl": 1.25rem,
+  "xxl": 1.5rem
+);
+
+form {
+  div {
+    &.form-group {
+      width: 100%;
+
+      label {
+        &.col-form-label {
+          display: block;
+        }
+
+        &.row-form-label {
+          display: inline;
+        }
+      }
+      input {
+        &.form-control {
+          width: inherit;
+          border: 1px solid $muted;
+          border-radius: 4px;
+        }
+        @each $type-key, $type-value in $pad-map {
+          &.form-control-#{$type-key} {
+            font-size: map-get($font-size-map, $type-key);
+            padding: $type-value;
+          }
+        }
+      }
+    }
+  }
+}
