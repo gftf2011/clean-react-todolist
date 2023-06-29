@@ -1,0 +1,19 @@
+$size-map: (
+  "xxs": 2.5rem,
+  "xs": 3rem,
+  "sm": 3.5rem,
+  "md": 4rem,
+  "lg": 4.5rem,
+  "xl": 5rem,
+  "xxl": 6rem,
+);
+
+img {
+  height: 4rem;
+
+  @each $key, $value in $size-map {
+    &.logo-#{$key} {
+      height: $value;
+    }
+  }
+}

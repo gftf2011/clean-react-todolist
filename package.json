@@ -16,7 +16,7 @@
     "react-icons": "^4.9.0",
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.11.2",
-    "styled-components": "^6.0.0-rc.2",
+    "styled-components": "^6.0.1",
     "vite-tsconfig-paths": "^4.2.0"
   },
   "devDependencies": {

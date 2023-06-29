@@ -1,6 +1,7 @@
-import { SignInPage } from '@/presentation/pages'
 
 import React from 'react'
+
+import { SignInPage } from '@/presentation/components/pages'
 
 import { makeSignInValidation } from '@/main/factories/presentation/validations'
 

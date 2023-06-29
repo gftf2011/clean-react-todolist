@@ -1,19 +1,8 @@
-// import fonts
 @import url('https://fonts.googleapis.com/css2?family=Rock+Salt&family=Shadows+Into+Light&display=swap');
-// import buttons
 @import 'buttons.scss';
-// import lists
-@import 'lists.scss';
-// import spacing
-@import 'spacing.scss';
-// import display
-@import 'display.scss';
-// import text
-@import 'text.scss';
-// import forms
-@import 'forms.scss';
+@import 'inputs.scss';
+@import 'logo.scss';
 
-// reset styles
 * {
   padding: 0;
   margin: 0;
@@ -21,18 +10,8 @@
 }
 
 #root, body {
+  position: relative;
+  display: block;
   height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-.container {
-  max-width: $xl;
-}
-
-header, nav {
-  max-width: 100vw;
-}
-
-img {
-  max-width: 100%;
 }

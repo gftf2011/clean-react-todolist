@@ -8,23 +8,114 @@ $color-map: (
   "muted": $muted
 );
 
+$size-map: (
+  "xxs": 2rem,
+  "xs": 2.25rem,
+  "sm": 2.5rem,
+  "md": 2.75rem,
+  "lg": 3rem,
+  "xl": 3.5rem,
+  "xxl": 4rem,
+);
+
+$font-size-map: (
+  "xxs": 0.875rem,
+  "xs": 1rem,
+  "sm": 1.125rem,
+  "md": 1.25rem,
+  "lg": 1.375rem,
+  "xl": 1.5rem,
+  "xxl": 1.75rem,
+);
+
 button, a {
-  display: inline-block;
   border: none;
-  border-radius: $base-border-radius;
-  text-decoration: none;
   cursor: pointer;
+  text-decoration: none;
+  border-radius: $base-border-radius;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  height: 2.75rem;
+  font-size: 1.25rem;
+
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+
+  &.block {
+    width: 100% !important;
+  }
+
+  @each $key, $value in $size-map {
+    &.btn-#{$key} {
+      height: $value;
+      
+      &.square {
+        padding-left: 0;
+        padding-right: 0;
+
+        width: $value;
+      }
+
+      font-size: map-get($font-size-map, $key);
+    }
+  }
 
   @each $key, $value in $color-map {
     &.btn-#{$key} {
-      border: $base-border-thickness solid $primary;
+      border: $base-border-thickness solid $value;
       background-color: $value;
+
+      @if $key == "light" {
+        color: $dark;
+      } @else if $key == "muted" {
+        color: $dark;
+      } @else {
+        color: $light;
+      }
     }
 
     &.btn-outline-#{$key} {
       border: $base-border-thickness solid $value;
       color: $value;
       background-color: transparent;
+
+      &:hover {
+        border: $base-border-thickness solid $value;
+        background-color: $value;
+
+        @if $key == "light" {
+          color: $dark;
+        } @else if $key == "muted" {
+          color: $dark;
+        } @else {
+          color: $light;
+        }
+      }
+    }
+
+    &.btn-elegant-#{$key} {
+      background-color: transparent;
+      color: $value;
+      border-radius: 0px;
+
+      &:hover {
+        border-bottom: 2px solid $value;
+      }
+    }
+
+    &.btn-elegant2-#{$key} {
+      background-color: transparent;
+      color: $value;
+      border-radius: 0px;
+
+      &:hover {
+        border-left: 2px solid $value;
+        border-right: 2px solid $value;
+      }
     }
   }
 }

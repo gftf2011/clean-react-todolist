@@ -1,0 +1,40 @@
+$size-map: (
+  "xxs": 2rem,
+  "xs": 2.25rem,
+  "sm": 2.5rem,
+  "md": 2.75rem,
+  "lg": 3rem,
+  "xl": 3.5rem,
+  "xxl": 4rem,
+);
+
+$font-size-map: (
+  "xxs": 0.750rem,
+  "xs": 0.875rem,
+  "sm": 1rem,
+  "md": 1.125rem,
+  "lg": 1.25rem,
+  "xl": 1.375rem,
+  "xxl": 1.5rem,
+);
+
+input {
+  height: 2.75rem;
+  font-size: 1.125rem;
+
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+
+  width: 100%;
+
+  border: 2px solid $muted;
+  border-radius: $base-border-radius;
+
+  @each $key, $value in $size-map {
+    &.#{$key} {
+      height: $value;
+
+      font-size: map-get($font-size-map, $key);
+    }
+  }
+}
