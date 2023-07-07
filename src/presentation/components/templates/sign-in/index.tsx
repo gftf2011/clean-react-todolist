@@ -7,7 +7,7 @@ import { MainWrapper, FormWrapper } from './styles.tsx'
 type Props = {
   emailInputOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void | Promise<void>
   passwordInputOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void | Promise<void>
-  submitOnClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void | Promise<void>
+  submit: () => void | Promise<void>
   emailValidationMessage: string
   passwordValidationMessage: string
 }
@@ -18,7 +18,7 @@ export const SignInTemplate: React.FC<Props> = (props) => {
     <>
       <Header />
       <MainWrapper>
-        <FormWrapper>
+        <FormWrapper onSubmit={props.submit}>
           <h1>Sign-In</h1>
           <FormControl
             id='email:sign-in:form-control'
@@ -39,7 +39,6 @@ export const SignInTemplate: React.FC<Props> = (props) => {
           <Button
             type='submit'
             className='btn-primary btn-md block'
-            onClick={props.submitOnClick}
           >
             Submit
           </Button>

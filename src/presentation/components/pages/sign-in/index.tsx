@@ -31,8 +31,7 @@ export const SignInPage: React.FC<Props> = ({ validation }) => {
     setPasswordValidationErrorMsg(passwordErrorMessage)
   }
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault()
+  const handleSubmit = (): void => {
     validateInputFields()
   }
 
@@ -40,7 +39,7 @@ export const SignInPage: React.FC<Props> = ({ validation }) => {
     <SignInTemplate
       emailInputOnChange={handleEmailInput}
       passwordInputOnChange={handlePasswordInput}
-      submitOnClick={handleSubmit}
+      submit={handleSubmit}
       emailValidationMessage={emailValidationErrorMsg}
       passwordValidationMessage={passwordValidationErrorMsg} />
   )
