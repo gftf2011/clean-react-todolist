@@ -7,7 +7,7 @@ import { MainWrapper, FormWrapper } from './styles.tsx'
 type Props = {
   emailInputOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void | Promise<void>
   passwordInputOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void | Promise<void>
-  submit: () => void | Promise<void>
+  submit: (event: React.FormEvent<HTMLFormElement>) => void | Promise<void>
   emailValidationMessage: string
   passwordValidationMessage: string
 }

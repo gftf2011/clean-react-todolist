@@ -15,9 +15,9 @@ export class SignInUseCaseImpl implements SignInUseCase {
   
   public async execute(input: SignInUseCase.Input): Promise<SignInUseCase.Output> {
     const response = await this.httpClient.request({
-      url: this.url,
+      url: `${this.url}/api/V1/sign-in`,
       method: 'post',
-      data: input,
+      body: input,
     });
 
     switch (response.statusCode) {

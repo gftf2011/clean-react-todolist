@@ -1,14 +1,16 @@
 import { useState } from 'react'
 
 import { SignInTemplate } from '@/presentation/components/templates'
-
 import { Validation } from '@/presentation/contracts/validation'
+
+import { SignInUseCase } from '@/domain/use-cases'
 
 type Props = {
   validation: Validation
+  signInUseCase: SignInUseCase
 }
 
-export const SignInPage: React.FC<Props> = ({ validation }) => {
+export const SignInPage: React.FC<Props> = ({ validation, signInUseCase }) => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
@@ -31,8 +33,11 @@ export const SignInPage: React.FC<Props> = ({ validation }) => {
     setPasswordValidationErrorMsg(passwordErrorMessage)
   }
 
-  const handleSubmit = (): void => {
-    validateInputFields()
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    validateInputFields();
+    const response = await signInUseCase.execute({ email, password });
+    console.log(response);
   }
 
   return (

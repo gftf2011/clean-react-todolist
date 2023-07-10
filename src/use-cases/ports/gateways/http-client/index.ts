@@ -13,7 +13,7 @@ export enum HttpStatusCode {
 type HttpRequest = {
   url: string,
   method: HttpMethod,
-  data?: any,
+  body?: any,
   headers?: any,
 }
 
