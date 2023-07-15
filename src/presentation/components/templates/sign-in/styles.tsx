@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
 export const MainWrapper = styled.main`
+  position: relative;
+
   height: calc(100vh - 96px - 80px);
   width: 100%;
 

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Logo, Link, Button, Icon } from '@/presentation/components/atoms'
 import { Navbar } from '@/presentation/components/molecules'
 
-import './styles.scss'
+import { HeaderWrapper } from './styles'
 
 export const Header: React.FC = () => {
   const [dropdownButtonActive, setDropdownButtonActive] = useState<boolean>(false)
@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
   }
 
   return (
-    <div className='full-header-wrapper'>
+    <HeaderWrapper>
       <header>
         <div className='header-wrapper'>
           <div className='logo-wrapper'>
@@ -39,6 +39,6 @@ export const Header: React.FC = () => {
           </Navbar>}
         </div>
       </header>
-    </div>
+    </HeaderWrapper>
   )
 }

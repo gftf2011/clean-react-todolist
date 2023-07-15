@@ -5,11 +5,11 @@ import {
   InstagramLink,
 } from '@/presentation/components/molecules'
 
-import './styles.scss'
+import { FooterWrapper } from './styles'
 
 export const Footer: React.FC = () => {
   return (
-    <footer>
+    <FooterWrapper>
       <div className='footer-wrapper'>
         <p>Developed by Gabriel Ferrari Tarallo Ferraz</p>
         <ul>
@@ -27,6 +27,6 @@ export const Footer: React.FC = () => {
           </li>
         </ul>
       </div>
-    </footer>
+    </FooterWrapper>
   )
 }

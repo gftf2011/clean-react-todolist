@@ -1,4 +1,6 @@
-footer {
+import styled from 'styled-components'
+
+export const FooterWrapper = styled.footer`
   width: 100%;
   min-height: 80px;
 
@@ -7,9 +9,9 @@ footer {
   align-items: center;
   justify-content: center;
 
-  background-color: $primary;
+  background-color: #1ca4c9;
 
-  border-top: 1px solid $muted;
+  border-top: 1px solid #e9e9e9;
 
   font-family: 'Rock Salt', cursive;
 
@@ -25,7 +27,7 @@ footer {
     justify-content: space-between;
 
     p {
-      color: $muted;
+      color: #e9e9e9;
       text-align: center;
       font-size: 0.75rem;
     }
@@ -63,4 +65,4 @@ footer {
       }
     }
   }
-}
+`

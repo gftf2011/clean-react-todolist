@@ -2,7 +2,15 @@ import { AiOutlineMenu } from 'react-icons/ai'
 
 import { HiOutlineX } from 'react-icons/hi'
 
+import { FiLoader } from 'react-icons/fi'
+
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram } from "react-icons/fa";
+
+const ScreenLoader: React.FC = () => {
+  return (
+    <FiLoader />
+  )
+}
 
 const MenuDropdown: React.FC = () => {
   return (
@@ -41,6 +49,7 @@ const Instagram: React.FC = () => {
 }
 
 export const Icon = {
+  ScreenLoader,
   MenuDropdown,
   CloseMenu,
   Media: {
