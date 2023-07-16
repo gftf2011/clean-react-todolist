@@ -1,4 +1,4 @@
-import { UseCase } from "./base";
+import { UseCase } from './base';
 
 export interface SignInUseCase extends UseCase {
   execute: (input: SignInUseCase.Input) => Promise<SignInUseCase.Output>

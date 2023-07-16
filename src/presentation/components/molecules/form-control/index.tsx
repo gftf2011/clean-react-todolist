@@ -6,7 +6,7 @@ type Props = {
   id: string
   name: string
   placeholder?: string
-  type: 'email' | 'password'
+  type: 'email' | 'password' | 'text'
   inputOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void | Promise<void>
   errorMessage?: string
   labelText: string

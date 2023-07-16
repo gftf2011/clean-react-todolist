@@ -25,7 +25,7 @@ export const Header: React.FC = () => {
           <Navbar navigationId='header-desktop-navigation' listClassName='row'>
             <Link to='/' className='btn-elegant-primary'>Home</Link>
             <Link to='/sign-in' className='btn-elegant-primary'>Sign-In</Link>
-            <Link to='/' className='btn-elegant-primary'>Sign-Up</Link>
+            <Link to='/sign-up' className='btn-elegant-primary'>Sign-Up</Link>
           </Navbar>
           <Button onClick={handleDropdownButtonClick} id='header-mobile-dropdown-button' className='btn-primary'>
             {dropdownButtonActive ? <Icon.CloseMenu /> : <Icon.MenuDropdown />}
@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
           {dropdownButtonActive && <Navbar navigationId='header-mobile-navigation' listClassName='column'>
             <Link to='/' className='btn-elegant2-primary'>Home</Link>
             <Link to='/sign-in' className='btn-elegant2-primary'>Sign-In</Link>
-            <Link to='/' className='btn-elegant2-primary'>Sign-Up</Link>
+            <Link to='/sign-up' className='btn-elegant2-primary'>Sign-Up</Link>
           </Navbar>}
         </div>
       </header>
