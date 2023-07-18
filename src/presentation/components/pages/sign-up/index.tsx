@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { SignUpTemplate } from '@/presentation/components/templates'
 import { Validation } from '@/presentation/contracts/validation'
@@ -13,6 +14,8 @@ type Props = {
 }
 
 export const SignUpPage: React.FC<Props> = ({ validation, signUpUseCase, storage }) => {
+  const navigate = useNavigate()
+
   const [name, setName] = useState<string>('')
   const [lastname, setLastname] = useState<string>('')
   const [email, setEmail] = useState<string>('')
@@ -66,7 +69,7 @@ export const SignUpPage: React.FC<Props> = ({ validation, signUpUseCase, storage
     try {
       const response = await signUpUseCase.execute({ email, password, name, lastname });
       storage.set(Storage.KEYS.ACCESS_TOKEN, response);
-      // TODO: redirect to page of todos
+      navigate('/todos')
     } catch (err) {
       setToastText((err as Error).message)
       setShowToast(true)

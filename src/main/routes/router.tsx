@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { makeHome, makeSignIn, makeSignUp } from '@/main/factories/presentation'
+import { makeHome, makeSignIn, makeSignUp, makeTodos } from '@/main/factories/presentation'
 import { ReduxRouterDomProvider } from '@/main/adapters'
 
 const routes = [
@@ -15,6 +15,10 @@ const routes = [
   {
     path: "/sign-up",
     element: makeSignUp({}),
+  },
+  {
+    path: "/todos",
+    element: makeTodos({}),
   },
 ]
 

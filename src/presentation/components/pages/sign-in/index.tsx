@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { SignInTemplate } from '@/presentation/components/templates'
 import { Validation } from '@/presentation/contracts/validation'
@@ -13,6 +14,8 @@ type Props = {
 }
 
 export const SignInPage: React.FC<Props> = ({ validation, signInUseCase, storage }) => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -50,7 +53,7 @@ export const SignInPage: React.FC<Props> = ({ validation, signInUseCase, storage
     try {
       const response = await signInUseCase.execute({ email, password });
       storage.set(Storage.KEYS.ACCESS_TOKEN, response);
-      // TODO: redirect to page of todos
+      navigate('/todos')
     } catch (err) {
       setToastText((err as Error).message)
       setShowToast(true)
