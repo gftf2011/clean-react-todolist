@@ -4,11 +4,31 @@ import { HiOutlineX } from 'react-icons/hi'
 
 import { FiLoader } from 'react-icons/fi'
 
-import { FaLinkedin, FaGithub, FaTwitter, FaInstagram } from "react-icons/fa";
+import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi'
+
+import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaTrashAlt } from 'react-icons/fa'
+
+const Trash: React.FC = () => {
+  return (
+    <FaTrashAlt />
+  )
+}
 
 const ScreenLoader: React.FC = () => {
   return (
     <FiLoader />
+  )
+}
+
+const LeftArrow: React.FC = () => {
+  return (
+    <BiLeftArrowAlt />
+  )
+}
+
+const RightArrow: React.FC = () => {
+  return (
+    <BiRightArrowAlt />
   )
 }
 
@@ -50,8 +70,11 @@ const Instagram: React.FC = () => {
 
 export const Icon = {
   ScreenLoader,
+  LeftArrow,
+  RightArrow,
   MenuDropdown,
   CloseMenu,
+  Trash,
   Media: {
     LinkedIn,
     Github,

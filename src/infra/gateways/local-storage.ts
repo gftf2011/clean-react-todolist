@@ -1,7 +1,7 @@
 import { Storage } from '@/use-cases/ports/gateways'
 
 export class LocalStorage implements Storage {
-  set(key: string, value: object): void {
+  set(key: string, value: object | null): void {
     localStorage.setItem(key, JSON.stringify(value))
   }
   get(key: string): any {

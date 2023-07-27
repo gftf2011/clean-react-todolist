@@ -22,7 +22,7 @@ export class SignUpUseCaseImpl implements SignUpUseCase {
     });
 
     switch (response.statusCode) {
-      case HttpStatusCode.ok: return response.body as SignUpUseCase.Output
+      case HttpStatusCode.created: return response.body as SignUpUseCase.Output
       case HttpStatusCode.badRequest: throw new InvalidCredentialsError()
       case HttpStatusCode.forbidden: throw new EmailAlreadyExistsError()
       case HttpStatusCode.serverError: throw new ServerError()

@@ -10,6 +10,6 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     "@typescript-eslint/no-namespace": "off",
-    'react-refresh/only-export-components': 'warn',
+    "react-refresh/only-export-components": "warn",
   },
 }

@@ -5,7 +5,7 @@ import { HttpClient, HttpResponse } from '@/use-cases/ports/gateways';
 export class AxiosHttpClient implements HttpClient {
   public async request(data: {
     url: string;
-    method: 'post' | 'get' | 'put' | 'delete';
+    method: 'post' | 'get' | 'patch' | 'put' | 'delete';
     body?: any;
     headers?: any;
   }): Promise<HttpResponse<any>> {
@@ -19,13 +19,13 @@ export class AxiosHttpClient implements HttpClient {
   
       return {
         statusCode: response.status,
-        body: response.data,
+        body: response.data.body,
       }
     } catch (err) {
       const error: AxiosError<HttpResponse<any>> = err as any;
       return {
         statusCode: error.response?.status as number,
-        body: error.response?.data as any,
+        body: error.response?.data.body as any,
       }
     }
   }
