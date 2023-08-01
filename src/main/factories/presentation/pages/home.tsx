@@ -1,9 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-import { HomePage } from '@/presentation/components/pages'
+import { HomePage } from '@/presentation/components/pages';
+
+import { LocalStorage } from '@/infra/gateways';
+
+import { SignedInRoute } from '@/main/proxies';
 
 export const makeHome: React.FC<any> = () => {
   return (
-    <HomePage />
-  )
-}
+    <SignedInRoute storage={new LocalStorage()}>
+      <HomePage />
+    </SignedInRoute>
+  );
+};

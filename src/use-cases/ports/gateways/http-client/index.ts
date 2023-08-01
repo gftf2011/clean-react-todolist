@@ -9,21 +9,21 @@ export enum HttpStatusCode {
   forbidden = 403,
   notFound = 404,
   serverError = 500,
-  serviceUnavailable = 503
+  serviceUnavailable = 503,
 }
 
 type HttpRequest = {
-  url: string,
-  method: HttpMethod,
-  body?: any,
-  headers?: any,
-}
+  url: string;
+  method: HttpMethod;
+  body?: any;
+  headers?: any;
+};
 
 export type HttpResponse<T = any> = {
-  statusCode: HttpStatusCode
-  body?: T
-}
+  statusCode: HttpStatusCode;
+  body?: T;
+};
 
 export interface HttpClient<R = any> {
-  request: (data: HttpRequest) => Promise<HttpResponse<R>>
+  request: (data: HttpRequest) => Promise<HttpResponse<R>>;
 }

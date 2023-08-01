@@ -7,12 +7,14 @@ import {
   UnknownError,
 } from '@/use-cases/errors';
 
-export class UpdateFinishedNoteUseCaseImpl implements UpdateFinishedNoteUseCase {
+export class UpdateFinishedNoteUseCaseImpl
+  implements UpdateFinishedNoteUseCase
+{
   constructor(
     private readonly url: string,
     private readonly httpClient: HttpClient<void>
   ) {}
-  
+
   public async execute(input: UpdateFinishedNoteUseCase.Input): Promise<void> {
     const response = await this.httpClient.request({
       url: `${this.url}/api/V1/update-finished-note`,
@@ -22,16 +24,21 @@ export class UpdateFinishedNoteUseCaseImpl implements UpdateFinishedNoteUseCase 
       },
       body: {
         id: input.noteId,
-        finished: input.finished
-      }
+        finished: input.finished,
+      },
     });
 
     switch (response.statusCode) {
-      case HttpStatusCode.noContent: return
-      case HttpStatusCode.unauthorized: throw new InvalidTokenError()
-      case HttpStatusCode.serverError: throw new ServerError()
-      case HttpStatusCode.serviceUnavailable: throw new ServiceUnavailableError()
-      default: throw new UnknownError()
+      case HttpStatusCode.noContent:
+        return;
+      case HttpStatusCode.unauthorized:
+        throw new InvalidTokenError();
+      case HttpStatusCode.serverError:
+        throw new ServerError();
+      case HttpStatusCode.serviceUnavailable:
+        throw new ServiceUnavailableError();
+      default:
+        throw new UnknownError();
     }
   }
 }

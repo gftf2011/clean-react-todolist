@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const NavigationWrapper = styled.nav`
   width: 100%;
@@ -33,7 +33,7 @@ export const NavigationWrapper = styled.nav`
         &:first-child {
           padding: 0 0.25rem 0 0.5rem;
         }
-    
+
         &:last-child {
           padding: 0 0.5rem 0 0.25rem;
         }
@@ -56,4 +56,4 @@ export const NavigationWrapper = styled.nav`
       }
     }
   }
-`
+`;

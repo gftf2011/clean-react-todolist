@@ -1,15 +1,15 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type UserState = {
-  accessToken: string
-}
+  accessToken: string;
+};
 
 const initialState: UserState = {
-  accessToken: ''
-}
+  accessToken: '',
+};
 
 export const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     accessToken: (state: UserState, action: PayloadAction<UserState>) => {

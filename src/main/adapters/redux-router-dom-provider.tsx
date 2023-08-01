@@ -1,12 +1,16 @@
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 
-import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom'
+import {
+  createBrowserRouter,
+  RouteObject,
+  RouterProvider,
+} from 'react-router-dom';
 
-import { store } from '@/presentation/state-manager/redux-toolkit'
+import { store } from '@/presentation/state-manager/redux-toolkit';
 
 type Props = {
-  routes: RouteObject[]
-}
+  routes: RouteObject[];
+};
 
 export const ReduxRouterDomProvider: React.FC<Props> = ({ routes }) => {
   const router = createBrowserRouter(routes);
@@ -15,5 +19,5 @@ export const ReduxRouterDomProvider: React.FC<Props> = ({ routes }) => {
     <Provider store={store}>
       <RouterProvider router={router} />
     </Provider>
-  )
-}
+  );
+};

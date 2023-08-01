@@ -15,10 +15,10 @@ export const ScreenWrapper = styled.div`
     font-size: 5rem;
 
     @-webkit-keyframes rotating {
-      from{
+      from {
         -webkit-transform: rotate(0deg);
       }
-      to{
+      to {
         -webkit-transform: rotate(360deg);
       }
     }
@@ -30,4 +30,4 @@ export const ScreenWrapper = styled.div`
     font-family: 'Shadows Into Light', cursive;
     margin-top: 1rem;
   }
-`
+`;

@@ -1,8 +1,8 @@
-import { FieldValidation } from '@/presentation/validation/contracts'
-import { InvalidFieldError } from '@/presentation/validation/errors'
+import { FieldValidation } from '@/presentation/validation/contracts';
+import { InvalidFieldError } from '@/presentation/validation/errors';
 
 export class PasswordValidation implements FieldValidation {
-  constructor (readonly field: string) {}
+  constructor(readonly field: string) {}
 
   private countOnlyNumbers(password: string): number {
     return password.replace(/(\D)/g, '').length;
@@ -26,7 +26,7 @@ export class PasswordValidation implements FieldValidation {
     return PASSWORD_HAS_ANY_SPACE_REGEX.test(password);
   }
 
-  validate (input: any): void {
+  validate(input: any): void {
     if (
       !input[this.field] ||
       this.hasEmptySpace(input[this.field]) ||

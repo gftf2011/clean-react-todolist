@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const FormControlWrapper = styled.div`
   &.form-control {
@@ -6,4 +6,4 @@ export const FormControlWrapper = styled.div`
     height: 7.5rem;
     padding-bottom: 0.25rem;
   }
-`
+`;

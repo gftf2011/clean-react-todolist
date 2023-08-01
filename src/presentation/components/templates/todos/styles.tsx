@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const MainWrapper = styled.main`
   position: relative;
@@ -27,6 +27,12 @@ export const MainWrapper = styled.main`
     border: 2px solid #e9e9e9;
 
     padding: 12px;
+
+    @media only screen and (max-width: 496px) {
+      & {
+        border: none;
+      }
+    }
   }
 
   hr {
@@ -41,7 +47,8 @@ export const MainWrapper = styled.main`
 
   @media only screen and (max-height: 620px) {
     & {
+      margin-top: 1rem;
       justify-content: flex-start;
     }
   }
-`
+`;

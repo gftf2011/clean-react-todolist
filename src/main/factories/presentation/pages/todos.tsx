@@ -1,9 +1,12 @@
-import { TodosPage } from '@/presentation/components/pages'
+import { TodosPage } from '@/presentation/components/pages';
 
-import { PrivateRoute } from '@/main/proxies'
-import { makeFindNotesUseCase, makeUpdateFinishedNoteUseCase } from '@/main/factories/use-cases'
+import { PrivateRoute } from '@/main/proxies';
+import {
+  makeFindNotesUseCase,
+  makeUpdateFinishedNoteUseCase,
+} from '@/main/factories/use-cases';
 
-import { LocalStorage } from '@/infra/gateways'
+import { LocalStorage } from '@/infra/gateways';
 
 export const makeTodos: React.FC = () => {
   return (
@@ -11,7 +14,8 @@ export const makeTodos: React.FC = () => {
       <TodosPage
         findNotesUseCase={makeFindNotesUseCase()}
         updateFinishedNoteUseCase={makeUpdateFinishedNoteUseCase()}
-        storage={new LocalStorage()} />
+        storage={new LocalStorage()}
+      />
     </PrivateRoute>
-  )
-}
+  );
+};

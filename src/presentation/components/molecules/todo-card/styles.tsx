@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -20,12 +20,12 @@ export const Wrapper = styled.div`
     cursor: pointer;
 
     width: calc(100% - 3rem);
-    
+
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
   }
-`
+`;
 
 export const CheckboxWrapper = styled.span`
   padding: 0 1rem;
@@ -33,10 +33,10 @@ export const CheckboxWrapper = styled.span`
   div {
     width: 1rem;
   }
-`
+`;
 
 export const ActionWrapper = styled.span`
   margin-top: 0.5rem;
 
   padding: 0 0.75rem;
-`
+`;

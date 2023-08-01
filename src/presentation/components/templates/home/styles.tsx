@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const MainWrapper = styled.main`
   padding: 1rem;
@@ -13,7 +13,8 @@ export const MainWrapper = styled.main`
 
   font-family: 'Rock Salt', cursive;
 
-  h1, h2 {
+  h1,
+  h2 {
     text-align: center;
   }
 
@@ -26,10 +27,22 @@ export const MainWrapper = styled.main`
       h1 {
         font-size: 1.75rem;
       }
-  
+
       h2 {
         font-size: 1.25rem;
       }
     }
   }
-`
+
+  @media only screen and (max-width: 576px) {
+    & {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1rem;
+      }
+    }
+  }
+`;

@@ -14,19 +14,19 @@ export class AxiosHttpClient implements HttpClient {
         url: data.url,
         method: data.method,
         data: data.body,
-        headers: data.headers
+        headers: data.headers,
       });
-  
+
       return {
         statusCode: response.status,
         body: response.data.body,
-      }
+      };
     } catch (err) {
       const error: AxiosError<HttpResponse<any>> = err as any;
       return {
         statusCode: error.response?.status as number,
         body: error.response?.data.body as any,
-      }
+      };
     }
   }
 }

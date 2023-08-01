@@ -13,8 +13,10 @@ export class SignUpUseCaseImpl implements SignUpUseCase {
     private readonly url: string,
     private readonly httpClient: HttpClient<SignUpUseCase.Output>
   ) {}
-  
-  public async execute(input: SignUpUseCase.Input): Promise<SignUpUseCase.Output> {
+
+  public async execute(
+    input: SignUpUseCase.Input
+  ): Promise<SignUpUseCase.Output> {
     const response = await this.httpClient.request({
       url: `${this.url}/api/V1/sign-up`,
       method: 'post',
@@ -22,12 +24,18 @@ export class SignUpUseCaseImpl implements SignUpUseCase {
     });
 
     switch (response.statusCode) {
-      case HttpStatusCode.created: return response.body as SignUpUseCase.Output
-      case HttpStatusCode.badRequest: throw new InvalidCredentialsError()
-      case HttpStatusCode.forbidden: throw new EmailAlreadyExistsError()
-      case HttpStatusCode.serverError: throw new ServerError()
-      case HttpStatusCode.serviceUnavailable: throw new ServiceUnavailableError()
-      default: throw new UnknownError()
+      case HttpStatusCode.created:
+        return response.body as SignUpUseCase.Output;
+      case HttpStatusCode.badRequest:
+        throw new InvalidCredentialsError();
+      case HttpStatusCode.forbidden:
+        throw new EmailAlreadyExistsError();
+      case HttpStatusCode.serverError:
+        throw new ServerError();
+      case HttpStatusCode.serviceUnavailable:
+        throw new ServiceUnavailableError();
+      default:
+        throw new UnknownError();
     }
   }
 }

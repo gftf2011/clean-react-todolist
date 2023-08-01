@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const MainWrapper = styled.main`
   position: relative;
@@ -10,7 +10,14 @@ export const MainWrapper = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`
+
+  @media only screen and (max-height: 580px) {
+    & {
+      margin-top: 1rem;
+      justify-content: flex-start;
+    }
+  }
+`;
 
 export const FormWrapper = styled.form`
   width: 100%;
@@ -28,11 +35,19 @@ export const FormWrapper = styled.form`
 
   font-family: 'Shadows Into Light', cursive;
 
-  input, button, h1 {
+  input,
+  button,
+  h1 {
     font-family: inherit;
   }
 
   h1 {
     margin-bottom: 1rem;
   }
-`
+
+  @media only screen and (max-width: 496px) {
+    & {
+      border: none;
+    }
+  }
+`;

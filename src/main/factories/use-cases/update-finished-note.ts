@@ -7,7 +7,10 @@ import { AxiosHttpClient } from '@/infra/gateways';
 export const makeUpdateFinishedNoteUseCase = (): UseCase => {
   const httpClient = new AxiosHttpClient();
 
-  const updateFinishedNoteUseCase = new UpdateFinishedNoteUseCaseImpl(import.meta.env.VITE_BASE_URL, httpClient);
+  const updateFinishedNoteUseCase = new UpdateFinishedNoteUseCaseImpl(
+    import.meta.env.VITE_BASE_URL,
+    httpClient
+  );
 
   return updateFinishedNoteUseCase;
-}
+};

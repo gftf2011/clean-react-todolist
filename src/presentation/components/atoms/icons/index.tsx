@@ -1,72 +1,58 @@
-import { AiOutlineMenu } from 'react-icons/ai'
+import { AiOutlineMenu } from 'react-icons/ai';
 
-import { HiOutlineX } from 'react-icons/hi'
+import { HiOutlineX } from 'react-icons/hi';
 
-import { FiLoader } from 'react-icons/fi'
+import { FiLoader } from 'react-icons/fi';
 
-import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi'
+import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
 
-import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaTrashAlt } from 'react-icons/fa'
+import {
+  FaLinkedin,
+  FaGithub,
+  FaTwitter,
+  FaInstagram,
+  FaTrashAlt,
+} from 'react-icons/fa';
 
 const Trash: React.FC = () => {
-  return (
-    <FaTrashAlt />
-  )
-}
+  return <FaTrashAlt />;
+};
 
 const ScreenLoader: React.FC = () => {
-  return (
-    <FiLoader />
-  )
-}
+  return <FiLoader />;
+};
 
 const LeftArrow: React.FC = () => {
-  return (
-    <BiLeftArrowAlt />
-  )
-}
+  return <BiLeftArrowAlt />;
+};
 
 const RightArrow: React.FC = () => {
-  return (
-    <BiRightArrowAlt />
-  )
-}
+  return <BiRightArrowAlt />;
+};
 
 const MenuDropdown: React.FC = () => {
-  return (
-    <AiOutlineMenu />
-  )
-}
+  return <AiOutlineMenu />;
+};
 
 const CloseMenu: React.FC = () => {
-  return (
-    <HiOutlineX />
-  )
-}
+  return <HiOutlineX />;
+};
 
 const LinkedIn: React.FC = () => {
-  return (
-    <FaLinkedin />
-  )
-}
+  return <FaLinkedin />;
+};
 
 const Github: React.FC = () => {
-  return (
-    <FaGithub />
-  )
-}
+  return <FaGithub />;
+};
 
 const Twitter: React.FC = () => {
-  return (
-    <FaTwitter />
-  )
-}
+  return <FaTwitter />;
+};
 
 const Instagram: React.FC = () => {
-  return (
-    <FaInstagram />
-  )
-}
+  return <FaInstagram />;
+};
 
 export const Icon = {
   ScreenLoader,
@@ -80,5 +66,5 @@ export const Icon = {
     Github,
     Twitter,
     Instagram,
-  }
-}
+  },
+};

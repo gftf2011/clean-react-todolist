@@ -1,1 +1,1 @@
-export * from './redux-router-dom-provider'
+export * from './redux-router-dom-provider';

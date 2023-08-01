@@ -1,25 +1,23 @@
-import { Input } from '@/presentation/components/atoms'
+import { Input } from '@/presentation/components/atoms';
 
-import { FormControlWrapper } from './styles.tsx'
+import { FormControlWrapper } from './styles.tsx';
 
 type Props = {
-  id: string
-  name: string
-  placeholder?: string
-  type: 'email' | 'password' | 'text'
-  inputOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void | Promise<void>
-  errorMessage?: string
-  labelText: string
-}
+  id: string;
+  name: string;
+  placeholder?: string;
+  type: 'email' | 'password' | 'text';
+  inputOnChange: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void | Promise<void>;
+  errorMessage?: string;
+  labelText: string;
+};
 
 export const FormControl: React.FC<Props> = (props) => {
   return (
-    <FormControlWrapper className='form-control'>
-      <label
-        htmlFor={props.id}
-      >
-        {props.labelText}
-      </label>
+    <FormControlWrapper className="form-control">
+      <label htmlFor={props.id}>{props.labelText}</label>
       <Input
         name={props.name}
         placeholder={props.placeholder}
@@ -29,5 +27,5 @@ export const FormControl: React.FC<Props> = (props) => {
       />
       <span>{props.errorMessage}</span>
     </FormControlWrapper>
-  )
-}
+  );
+};

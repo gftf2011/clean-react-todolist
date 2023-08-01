@@ -1,6 +1,6 @@
-import { Icon } from '@/presentation/components/atoms'
+import { Icon } from '@/presentation/components/atoms';
 
-import { ScreenWrapper } from './styles'
+import { ScreenWrapper } from './styles';
 
 export const LoadingScreen: React.FC = () => {
   return (
@@ -8,5 +8,5 @@ export const LoadingScreen: React.FC = () => {
       <Icon.ScreenLoader />
       <h1>Loading...</h1>
     </ScreenWrapper>
-  )
-}
+  );
+};

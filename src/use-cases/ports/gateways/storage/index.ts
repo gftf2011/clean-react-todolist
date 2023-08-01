@@ -6,6 +6,6 @@ export namespace Storage {
 }
 
 export interface Storage {
-  set: (key: string, value: object | null) => void
-  get: (key: string) => any
+  set: (key: string, value: object | null) => void;
+  get: (key: string) => any;
 }

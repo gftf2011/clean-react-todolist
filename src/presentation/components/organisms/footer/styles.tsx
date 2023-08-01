@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const FooterWrapper = styled.footer`
   width: 100%;
@@ -34,7 +34,7 @@ export const FooterWrapper = styled.footer`
 
     ul {
       list-style: none;
-  
+
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -52,7 +52,7 @@ export const FooterWrapper = styled.footer`
     @media only screen and (max-width: 768px) {
       & {
         padding: 0.5rem;
-    
+
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -65,4 +65,4 @@ export const FooterWrapper = styled.footer`
       }
     }
   }
-`
+`;

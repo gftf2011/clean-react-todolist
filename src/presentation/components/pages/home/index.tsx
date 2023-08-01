@@ -1,7 +1,5 @@
-import { HomeTemplate } from '@/presentation/components/templates'
+import { HomeTemplate } from '@/presentation/components/templates';
 
 export const HomePage: React.FC = () => {
-  return (
-    <HomeTemplate />
-  )
-}
+  return <HomeTemplate />;
+};

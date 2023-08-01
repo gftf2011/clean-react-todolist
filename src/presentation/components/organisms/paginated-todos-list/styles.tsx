@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const ListWrapper = styled.ul`
   list-style: none;
@@ -8,7 +8,7 @@ export const ListWrapper = styled.ul`
   max-height: 480px;
 
   overflow: scroll;
-`
+`;
 
 export const ListItem = styled.li`
   width: 100%;
@@ -23,4 +23,4 @@ export const ListItem = styled.li`
   &:last-child {
     margin-bottom: 1rem;
   }
-`
+`;

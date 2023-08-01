@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const ToastWrapper = styled.div`
   top: 12px;
@@ -49,4 +49,4 @@ export const ToastWrapper = styled.div`
       max-width: 100%;
     }
   }
-`
+`;

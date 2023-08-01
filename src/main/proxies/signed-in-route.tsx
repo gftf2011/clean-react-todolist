@@ -6,10 +6,10 @@ type Props = {
   storage: Storage;
 } & RouteProps;
 
-export const PrivateRoute: React.FC<Props> = ({ storage, children }) => {
-  return storage.get(Storage.KEYS.ACCESS_TOKEN) ? (
+export const SignedInRoute: React.FC<Props> = ({ storage, children }) => {
+  return !storage.get(Storage.KEYS.ACCESS_TOKEN) ? (
     <>{children}</>
   ) : (
-    <Navigate to="/sign-in" />
+    <Navigate to="/todos" />
   );
 };

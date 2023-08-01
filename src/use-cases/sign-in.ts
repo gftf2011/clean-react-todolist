@@ -14,8 +14,10 @@ export class SignInUseCaseImpl implements SignInUseCase {
     private readonly url: string,
     private readonly httpClient: HttpClient<SignInUseCase.Output>
   ) {}
-  
-  public async execute(input: SignInUseCase.Input): Promise<SignInUseCase.Output> {
+
+  public async execute(
+    input: SignInUseCase.Input
+  ): Promise<SignInUseCase.Output> {
     const response = await this.httpClient.request({
       url: `${this.url}/api/V1/sign-in`,
       method: 'post',
@@ -23,13 +25,20 @@ export class SignInUseCaseImpl implements SignInUseCase {
     });
 
     switch (response.statusCode) {
-      case HttpStatusCode.ok: return response.body as SignInUseCase.Output
-      case HttpStatusCode.badRequest: throw new InvalidCredentialsError()
-      case HttpStatusCode.unauthorized: throw new EmailDoesNotExistsError()
-      case HttpStatusCode.forbidden: throw new PasswordDoesNotMatchError()
-      case HttpStatusCode.serverError: throw new ServerError()
-      case HttpStatusCode.serviceUnavailable: throw new ServiceUnavailableError()
-      default: throw new UnknownError()
+      case HttpStatusCode.ok:
+        return response.body as SignInUseCase.Output;
+      case HttpStatusCode.badRequest:
+        throw new InvalidCredentialsError();
+      case HttpStatusCode.unauthorized:
+        throw new EmailDoesNotExistsError();
+      case HttpStatusCode.forbidden:
+        throw new PasswordDoesNotMatchError();
+      case HttpStatusCode.serverError:
+        throw new ServerError();
+      case HttpStatusCode.serviceUnavailable:
+        throw new ServiceUnavailableError();
+      default:
+        throw new UnknownError();
     }
   }
 }

@@ -7,7 +7,10 @@ import { AxiosHttpClient } from '@/infra/gateways';
 export const makeSignInUseCase = (): UseCase => {
   const httpClient = new AxiosHttpClient();
 
-  const signInUseCase = new SignInUseCaseImpl(import.meta.env.VITE_BASE_URL, httpClient);
+  const signInUseCase = new SignInUseCaseImpl(
+    import.meta.env.VITE_BASE_URL,
+    httpClient
+  );
 
   return signInUseCase;
-}
+};
