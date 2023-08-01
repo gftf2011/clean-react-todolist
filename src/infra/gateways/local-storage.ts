@@ -9,4 +9,8 @@ export class LocalStorage implements Storage {
     const response = localStorage.getItem(key);
     return response ? JSON.parse(response) : null;
   }
+
+  clear(): void {
+    localStorage.clear();
+  }
 }

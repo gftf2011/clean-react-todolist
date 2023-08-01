@@ -1,3 +1,5 @@
+import { Note } from '@/domain/models';
+
 import { Link } from '@/presentation/components/atoms';
 
 import { LoadingScreen, Toast } from '@/presentation/components/molecules';
@@ -8,14 +10,6 @@ import {
 } from '@/presentation/components/organisms';
 
 import { MainWrapper } from './styles';
-
-type Note = {
-  id: string;
-  finished: boolean;
-  title: string;
-  description: string;
-  timestamp: string;
-};
 
 type Props = {
   isLoading: boolean;

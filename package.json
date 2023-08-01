@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "dev:server": "node server/server.js",
     "dev": "vite",
     "predev": "npm run env:dev",
     "build": "tsc && vite build",

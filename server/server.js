@@ -76,7 +76,7 @@ server.post('/api/V1/sign-up', (req, res) => {
 });
 
 server.post('/api/V1/sign-in', (req, res) => {
-  if (!req.body.name || !req.body.lastname || !req.body.email || !req.body.password) {
+  if (!req.body.email || !req.body.password) {
     return res.status(400).json({
       statusCode: 400,
       body: {

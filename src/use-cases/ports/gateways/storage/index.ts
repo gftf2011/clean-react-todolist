@@ -8,4 +8,5 @@ export namespace Storage {
 export interface Storage {
   set: (key: string, value: object | null) => void;
   get: (key: string) => any;
+  clear: () => void;
 }

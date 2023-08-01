@@ -1,12 +1,6 @@
-import { UseCase } from './base';
+import { Note } from '../models';
 
-type Note = {
-  id: string;
-  finished: boolean;
-  title: string;
-  description: string;
-  timestamp: string;
-};
+import { UseCase } from './base';
 
 export interface FindNotesUseCase extends UseCase {
   execute: (input: FindNotesUseCase.Input) => Promise<FindNotesUseCase.Output>;

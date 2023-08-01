@@ -39,56 +39,27 @@ export const TodosPage: React.FC<Props> = ({
 
   const fetch = async (): Promise<void> => {
     try {
+      setLoading(true);
+
       const storageValue: { accessToken: string } = storage.get(
         Storage.KEYS.ACCESS_TOKEN
       );
-      const notesCache: any[] = storage.get(Storage.KEYS.NOTES);
 
-      if (!notesCache) {
-        setLoading(true);
+      const response = await findNotesUseCase.execute({
+        accessToken: storageValue.accessToken,
+        page,
+        limit,
+      });
 
-        const response = await findNotesUseCase.execute({
-          accessToken: storageValue.accessToken,
-          page,
-          limit,
-        });
-        storage.set(Storage.KEYS.NOTES, [response.paginatedNotes]);
-
-        setHasNextPage(response.paginatedNotes.next);
-        setHasPreviousPage(response.paginatedNotes.previous);
-        setShowPagination(
-          response.paginatedNotes.next || response.paginatedNotes.previous
-        );
-        setNotes(response.paginatedNotes.notes);
-      } else if (!notesCache[page]) {
-        setLoading(true);
-
-        const response = await findNotesUseCase.execute({
-          accessToken: storageValue.accessToken,
-          page,
-          limit,
-        });
-        storage.set(Storage.KEYS.NOTES, [
-          ...notesCache,
-          response.paginatedNotes,
-        ]);
-
-        setHasNextPage(response.paginatedNotes.next);
-        setHasPreviousPage(response.paginatedNotes.previous);
-        setShowPagination(
-          response.paginatedNotes.next || response.paginatedNotes.previous
-        );
-        setNotes(response.paginatedNotes.notes);
-      } else {
-        setHasNextPage(notesCache[page].next);
-        setHasPreviousPage(notesCache[page].previous);
-        setShowPagination(notesCache[page].next || notesCache[page].previous);
-        setNotes(notesCache[page].notes);
-      }
+      setHasNextPage(response.paginatedNotes.next);
+      setHasPreviousPage(response.paginatedNotes.previous);
+      setShowPagination(
+        response.paginatedNotes.next || response.paginatedNotes.previous
+      );
+      setNotes(response.paginatedNotes.notes);
     } catch (err) {
       if (err instanceof InvalidTokenError) {
-        storage.set(Storage.KEYS.ACCESS_TOKEN, null);
-        storage.set(Storage.KEYS.NOTES, null);
+        storage.clear();
 
         navigate('/sign-in');
       } else {
