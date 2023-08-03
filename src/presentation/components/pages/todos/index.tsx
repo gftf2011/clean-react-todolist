@@ -103,8 +103,7 @@ export const TodosPage: React.FC<Props> = ({
       });
     } catch (err) {
       if (err instanceof InvalidTokenError) {
-        storage.set(Storage.KEYS.ACCESS_TOKEN, null);
-        storage.set(Storage.KEYS.NOTES, null);
+        storage.clear();
 
         navigate('/sign-in');
       } else {
