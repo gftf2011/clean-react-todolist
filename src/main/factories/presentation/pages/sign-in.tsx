@@ -1,11 +1,20 @@
-import { SignInPage } from '@/presentation/pages'
+import { SignInPage } from '@/presentation/components/pages';
 
-import React from 'react'
+import { LocalStorage } from '@/infra/gateways';
 
-import { makeSignInValidation } from '@/main/factories/presentation/validations'
+import { makeSignInUseCase } from '@/main/factories/use-cases';
+import { makeSignInValidation } from '@/main/factories/presentation/validations';
 
-export const makeSignIn: React.FC<any> = () => {
+import { SignedInRoute } from '@/main/proxies';
+
+export const makeSignIn: React.FC = () => {
   return (
-    <SignInPage validation={makeSignInValidation()} />
-  )
-}
+    <SignedInRoute storage={new LocalStorage()}>
+      <SignInPage
+        validation={makeSignInValidation()}
+        signInUseCase={makeSignInUseCase()}
+        storage={new LocalStorage()}
+      />
+    </SignedInRoute>
+  );
+};
