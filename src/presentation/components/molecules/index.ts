@@ -1,3 +1,4 @@
+export * from './form-area-control';
 export * from './form-control';
 export * from './github-link';
 export * from './instagram-link';

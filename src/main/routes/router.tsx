@@ -4,7 +4,7 @@ import {
   makeHome,
   makeSignIn,
   makeSignUp,
-  makeTodo,
+  makeAddTodo,
   makeTodos,
 } from '@/main/factories/presentation';
 import { ReduxRouterDomProvider } from '@/main/adapters';
@@ -23,8 +23,8 @@ const routes = [
     element: makeSignUp({}),
   },
   {
-    path: '/todo',
-    element: makeTodo({}),
+    path: '/add-todo',
+    element: makeAddTodo({}),
   },
   {
     path: '/todos',

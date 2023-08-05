@@ -35,7 +35,7 @@ export const TodosPage: React.FC<Props> = ({
 
   const [toastText, setToastText] = useState<string>('');
 
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
 
   const fetch = async (): Promise<void> => {
     try {
@@ -76,31 +76,34 @@ export const TodosPage: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    storage.set(Storage.KEYS.ACCESS_TOKEN, null);
-    storage.set(Storage.KEYS.NOTES, null);
+    storage.clear();
 
     navigate('/');
   };
 
   const onChangeItem = async (id: string, finished: boolean): Promise<void> => {
     const notes: any[] = storage.get(Storage.KEYS.NOTES);
-    const token: string = storage.get(Storage.KEYS.ACCESS_TOKEN);
+    const storageValue: { accessToken: string } = storage.get(
+      Storage.KEYS.ACCESS_TOKEN
+    );
 
     try {
       setLoading(true);
 
       await updateFinishedNoteUseCase.execute({
-        accessToken: token,
+        accessToken: storageValue.accessToken,
         finished,
         noteId: id,
       });
 
-      notes[page].notes = (notes[page].notes as any[]).map((value) => {
+      notes[page - 1].notes = (notes[page - 1].notes as any[]).map((value) => {
         if (value.id === id) {
           value.finished = finished;
         }
         return value;
       });
+
+      setNotes(notes[page - 1].notes);
     } catch (err) {
       if (err instanceof InvalidTokenError) {
         storage.clear();

@@ -1,16 +1,23 @@
 import { UseCase } from '@/domain/use-cases';
 
 import { SignUpUseCaseImpl } from '@/use-cases';
+import { InvalidateNotesCacheUseCaseDecorator } from '@/use-cases/decorators';
 
-import { AxiosHttpClient } from '@/infra/gateways';
+import { AxiosHttpClient, LocalStorage } from '@/infra/gateways';
 
 export const makeSignUpUseCase = (): UseCase => {
   const httpClient = new AxiosHttpClient();
+  const storage = new LocalStorage();
 
   const signUpUseCase = new SignUpUseCaseImpl(
     import.meta.env.VITE_BASE_URL,
     httpClient
   );
 
-  return signUpUseCase;
+  const decorator = new InvalidateNotesCacheUseCaseDecorator(
+    signUpUseCase,
+    storage
+  );
+
+  return decorator;
 };

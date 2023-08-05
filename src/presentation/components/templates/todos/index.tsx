@@ -57,7 +57,7 @@ export const TodosTemplate: React.FC<Props> = (props) => {
                 onChangeItem={props.onChangeItem}
               />
               <hr />
-              <Link to="/todo" className="block btn-primary">
+              <Link to="/add-todo" className="block btn-primary">
                 Create Task
               </Link>
             </section>

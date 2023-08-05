@@ -67,6 +67,8 @@ export const SignInPage: React.FC<Props> = ({
       storage.set(Storage.KEYS.ACCESS_TOKEN, response);
       navigate('/todos');
     } catch (err) {
+      setEmail('');
+      setPassword('');
       setToastText((err as Error).message);
       setShowToast(true);
     } finally {

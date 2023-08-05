@@ -1,54 +1,64 @@
-// import styled from 'styled-components';
+import styled from 'styled-components';
 
-// export const MainWrapper = styled.main`
-//   position: relative;
+export const MainWrapper = styled.main`
+  position: relative;
 
-//   height: 100%;
-//   width: 100%;
+  height: calc(100vh - 96px - 80px);
+  width: 100%;
 
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-//   font-family: 'Shadows Into Light', cursive;
+  @media only screen and (max-height: 798px) {
+    & {
+      margin-top: 1rem;
+      justify-content: flex-start;
+    }
+  }
+`;
 
-//   section {
-//     display: flex;
-//     flex-direction: column;
-//     align-items: flex-start;
-//     justify-content: center;
+export const FormWrapper = styled.form`
+  width: 100%;
+  max-width: 480px;
 
-//     height: auto;
-//     width: 100%;
-//     max-width: 480px;
+  font-family: 'Shadows Into Light', cursive;
 
-//     border-radius: 0.5rem;
-//     border: 2px solid #e9e9e9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-//     padding: 12px;
+  padding: 1rem;
 
-//     @media only screen and (max-width: 496px) {
-//       & {
-//         border: none;
-//       }
-//     }
-//   }
+  border-radius: 0.5rem;
+  border: 2px solid #e9e9e9;
 
-//   hr {
-//     height: 1px;
-//     width: 100%;
+  input,
+  textarea,
+  button,
+  h1 {
+    font-family: inherit;
+  }
 
-//     border: none;
-//     background-color: #e9e9e9;
+  h1 {
+    margin-bottom: 1rem;
+  }
 
-//     margin: 0.75rem 0;
-//   }
+  hr {
+    height: 1px;
+    width: 100%;
 
-//   @media only screen and (max-height: 620px) {
-//     & {
-//       margin-top: 1rem;
-//       justify-content: flex-start;
-//     }
-//   }
-// `;
+    border: none;
+    background-color: #e9e9e9;
+
+    margin: 0.75rem 0;
+  }
+
+  @media only screen and (max-width: 496px) {
+    & {
+      border: none;
+    }
+  }
+`;

@@ -24,9 +24,10 @@ export const SignUpPage: React.FC<Props> = ({
   const [lastname, setLastname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [toastText, setToastText] = useState<string>('');
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showToast, setShowToast] = useState<boolean>(false);
-  const [toastText, setToastText] = useState<string>('');
 
   const [nameValidationErrorMsg, setNameValidationErrorMsg] =
     useState<string>('');
@@ -92,6 +93,10 @@ export const SignUpPage: React.FC<Props> = ({
       storage.set(Storage.KEYS.ACCESS_TOKEN, response);
       navigate('/todos');
     } catch (err) {
+      setName('');
+      setLastname('');
+      setEmail('');
+      setPassword('');
       setToastText((err as Error).message);
       setShowToast(true);
     } finally {

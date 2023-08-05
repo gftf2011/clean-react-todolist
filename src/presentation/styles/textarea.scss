@@ -1,0 +1,28 @@
+$font-size-map: (
+  "xxs": 0.750rem,
+  "xs": 0.875rem,
+  "sm": 1rem,
+  "md": 1.125rem,
+  "lg": 1.25rem,
+  "xl": 1.375rem,
+  "xxl": 1.5rem,
+);
+
+textarea {
+  resize: none;
+
+  font-size: 1.125rem;
+
+  padding: 0.75rem;
+
+  width: 100%;
+
+  border: 2px solid $muted;
+  border-radius: $base-border-radius;
+
+  @each $key, $value in $font-size-map {
+    &.#{$key} {
+      font-size: map-get($font-size-map, $key);
+    }
+  }
+}
