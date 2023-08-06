@@ -10,7 +10,7 @@
     "build": "tsc && vite build",
     "env:test": "rm -rf .env && cat ./envs/test/.env >> .env",
     "env:dev": "rm -rf .env && cat ./envs/dev/.env >> .env",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint --fix src",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -44,7 +44,6 @@
     "prettier": "^3.0.0",
     "sass": "^1.62.1",
     "typescript": "^5.0.2",
-    "uuid": "^9.0.0",
     "vite": "^4.3.2"
   }
 }

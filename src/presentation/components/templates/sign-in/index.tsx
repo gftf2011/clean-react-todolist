@@ -9,6 +9,8 @@ import { Header } from '@/presentation/components/organisms';
 import { MainWrapper, FormWrapper } from './styles.tsx';
 
 type Props = {
+  emailInputValue: string;
+  passwordInputValue: string;
   emailInputOnChange: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void | Promise<void>;
@@ -47,6 +49,7 @@ export const SignInTemplate: React.FC<Props> = (props) => {
                 placeholder="example@mail.com"
                 type="email"
                 name="email"
+                value={props.emailInputValue}
                 errorMessage={props.emailValidationMessage}
               />
               <FormControl
@@ -56,6 +59,7 @@ export const SignInTemplate: React.FC<Props> = (props) => {
                 placeholder="123456"
                 type="password"
                 name="password"
+                value={props.passwordInputValue}
                 errorMessage={props.passwordValidationMessage}
               />
               <Button type="submit" className="btn-primary btn-md block">

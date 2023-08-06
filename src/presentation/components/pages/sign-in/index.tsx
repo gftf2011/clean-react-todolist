@@ -78,6 +78,8 @@ export const SignInPage: React.FC<Props> = ({
 
   return (
     <SignInTemplate
+      emailInputValue={email}
+      passwordInputValue={password}
       emailInputOnChange={handleEmailInput}
       passwordInputOnChange={handlePasswordInput}
       submit={handleSubmit}

@@ -11,6 +11,7 @@ type Props = {
     e: React.ChangeEvent<HTMLInputElement>
   ) => void | Promise<void>;
   errorMessage?: string;
+  value?: string;
   labelText: string;
 };
 
@@ -19,6 +20,7 @@ export const FormControl: React.FC<Props> = (props) => {
     <FormControlWrapper className="form-control">
       <label htmlFor={props.id}>{props.labelText}</label>
       <Input
+        value={props.value || ''}
         name={props.name}
         placeholder={props.placeholder}
         type={props.type}

@@ -11,6 +11,7 @@ type Props = {
   ) => void | Promise<void>;
   errorMessage?: string;
   labelText: string;
+  value?: string;
   rows?: number;
 };
 
@@ -19,6 +20,7 @@ export const FormAreaControl: React.FC<Props> = (props) => {
     <FormControlWrapper className="form-control">
       <label htmlFor={props.id}>{props.labelText}</label>
       <TextArea
+        value={props.value || ''}
         name={props.name}
         placeholder={props.placeholder}
         id={props.id}

@@ -10,6 +10,8 @@ import { Header } from '@/presentation/components/organisms';
 import { MainWrapper, FormWrapper } from './styles';
 
 type Props = {
+  titleInputValue: string;
+  descriptionTextareaValue: string;
   isLoading: boolean;
   showToast: boolean;
   toastText: string;
@@ -48,6 +50,7 @@ export const TodoTemplate: React.FC<Props> = (props) => {
                 labelText="Title"
                 placeholder="Todo title"
                 type="text"
+                value={props.titleInputValue}
                 name="todo-title"
                 errorMessage=""
               />
@@ -55,6 +58,7 @@ export const TodoTemplate: React.FC<Props> = (props) => {
                 id="todo-task:description:form-control"
                 areaOnChange={props.descriptionInputOnChange}
                 rows={8}
+                value={props.descriptionTextareaValue}
                 labelText="Description"
                 placeholder="Should..."
                 name="todo-description"

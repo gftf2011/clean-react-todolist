@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { TodosTemplate } from '@/presentation/components/templates';
+import { RevalidateCacheNotesVisitor } from '@/presentation/visitors';
 
 import {
   FindNotesUseCase,
@@ -30,8 +31,9 @@ export const TodosPage: React.FC<Props> = ({
   const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const [showPagination, setShowPagination] = useState<boolean>(false);
-  const [notes, setNotes] = useState<any[]>([]);
   const [showToast, setShowToast] = useState<boolean>(false);
+
+  const [notes, setNotes] = useState<any[]>([]);
 
   const [toastText, setToastText] = useState<string>('');
 
@@ -82,7 +84,6 @@ export const TodosPage: React.FC<Props> = ({
   };
 
   const onChangeItem = async (id: string, finished: boolean): Promise<void> => {
-    const notes: any[] = storage.get(Storage.KEYS.NOTES);
     const storageValue: { accessToken: string } = storage.get(
       Storage.KEYS.ACCESS_TOKEN
     );
@@ -96,13 +97,11 @@ export const TodosPage: React.FC<Props> = ({
         noteId: id,
       });
 
-      notes[page - 1].notes = (notes[page - 1].notes as any[]).map((value) => {
-        if (value.id === id) {
-          value.finished = finished;
-        }
-        return value;
-      });
+      (updateFinishedNoteUseCase as any).accept(
+        new RevalidateCacheNotesVisitor(page - 1, id, finished, storage)
+      );
 
+      const notes: any[] = storage.get(Storage.KEYS.NOTES);
       setNotes(notes[page - 1].notes);
     } catch (err) {
       if (err instanceof InvalidTokenError) {
@@ -114,7 +113,6 @@ export const TodosPage: React.FC<Props> = ({
         setShowToast(true);
       }
     } finally {
-      storage.set(Storage.KEYS.NOTES, notes);
       setLoading(false);
     }
   };

@@ -9,6 +9,10 @@ import { Header } from '@/presentation/components/organisms';
 import { MainWrapper, FormWrapper } from './styles.tsx';
 
 type Props = {
+  nameInputValue: string;
+  lastnameInputValue: string;
+  emailInputValue: string;
+  passwordInputValue: string;
   nameInputOnChange: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void | Promise<void>;
@@ -55,6 +59,7 @@ export const SignUpTemplate: React.FC<Props> = (props) => {
                 placeholder="Name"
                 type="text"
                 name="name"
+                value={props.nameInputValue}
                 errorMessage={props.nameValidationMessage}
               />
               <FormControl
@@ -64,6 +69,7 @@ export const SignUpTemplate: React.FC<Props> = (props) => {
                 placeholder="Lastname"
                 type="text"
                 name="lastname"
+                value={props.lastnameInputValue}
                 errorMessage={props.lastnameValidationMessage}
               />
               <FormControl
@@ -73,6 +79,7 @@ export const SignUpTemplate: React.FC<Props> = (props) => {
                 placeholder="example@mail.com"
                 type="email"
                 name="email"
+                value={props.emailInputValue}
                 errorMessage={props.emailValidationMessage}
               />
               <FormControl
@@ -82,6 +89,7 @@ export const SignUpTemplate: React.FC<Props> = (props) => {
                 placeholder="123456"
                 type="password"
                 name="password"
+                value={props.passwordInputValue}
                 errorMessage={props.passwordValidationMessage}
               />
               <Button type="submit" className="btn-primary btn-md block">

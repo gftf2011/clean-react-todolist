@@ -1,4 +1,4 @@
-import { UpdateFinishedNoteUseCase } from '@/domain/use-cases';
+import { UpdateFinishedNoteUseCase, Visitor } from '@/domain/use-cases';
 import { HttpClient, HttpStatusCode } from '@/use-cases/ports/gateways';
 import {
   InvalidTokenError,
@@ -40,5 +40,9 @@ export class UpdateFinishedNoteUseCaseImpl
       default:
         throw new UnknownError();
     }
+  }
+
+  public accept(visitor: Visitor): void {
+    visitor.visit(this);
   }
 }

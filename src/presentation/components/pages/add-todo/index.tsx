@@ -91,6 +91,8 @@ export const AddTodoPage: React.FC<Props> = ({
   return (
     <>
       <TodoTemplate
+        titleInputValue={title}
+        descriptionTextareaValue={description}
         isLoading={loading}
         toastText={toastText}
         showToast={showToast}

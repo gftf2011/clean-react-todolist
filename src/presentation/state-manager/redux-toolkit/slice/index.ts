@@ -1,1 +1,1 @@
-export * from './user-slice';
+export * from './note-slice';

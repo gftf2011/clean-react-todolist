@@ -106,6 +106,10 @@ export const SignUpPage: React.FC<Props> = ({
 
   return (
     <SignUpTemplate
+      nameInputValue={name}
+      lastnameInputValue={lastname}
+      emailInputValue={email}
+      passwordInputValue={password}
       nameInputOnChange={handleNameInput}
       lastnameInputOnChange={handleLastnameInput}
       emailInputOnChange={handleEmailInput}
