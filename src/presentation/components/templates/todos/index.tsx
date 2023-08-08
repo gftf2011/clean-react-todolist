@@ -24,6 +24,7 @@ type Props = {
   ) => void | Promise<void>;
   todos: Note[];
   onChangeItem: (id: string, finished: boolean) => void | Promise<void>;
+  onDeleteItem: (id: string) => void | Promise<void>;
   closeToast: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void | Promise<void>;
@@ -55,6 +56,7 @@ export const TodosTemplate: React.FC<Props> = (props) => {
                 showPagination={props.showPagination}
                 todos={props.todos}
                 onChangeItem={props.onChangeItem}
+                onDeleteItem={props.onDeleteItem}
               />
               <hr />
               <Link to="/add-todo" className="block btn-primary">

@@ -1,38 +1,39 @@
-import { UpdateFinishedNoteUseCase, Visitor } from '@/domain/use-cases';
-import { HttpClient, HttpStatusCode } from '@/use-cases/ports/gateways';
+import { DeleteNoteUseCase, Visitor } from '@/domain/use-cases';
+
 import {
+  NotAllowedActionError,
   InvalidTokenError,
   ServerError,
   ServiceUnavailableError,
   UnknownError,
 } from '@/use-cases/errors';
+import { HttpClient, HttpStatusCode } from '@/use-cases/ports/gateways';
 
-export class UpdateFinishedNoteUseCaseImpl
-  implements UpdateFinishedNoteUseCase
-{
-  type?: string | undefined = 'update';
+export class DeleteNoteUseCaseImpl implements DeleteNoteUseCase {
+  type?: string | undefined = 'delete';
 
   constructor(
     private readonly url: string,
     private readonly httpClient: HttpClient<void>
   ) {}
 
-  public async execute(input: UpdateFinishedNoteUseCase.Input): Promise<void> {
+  public async execute(input: DeleteNoteUseCase.Input): Promise<void> {
     const response = await this.httpClient.request({
-      url: `${this.url}/api/V1/update-finished-note`,
-      method: 'patch',
+      url: `${this.url}/api/V1/delete-note`,
+      method: 'delete',
       headers: {
         Authorization: input.accessToken,
       },
       body: {
-        id: input.noteId,
-        finished: input.finished,
+        id: input.id,
       },
     });
 
     switch (response.statusCode) {
       case HttpStatusCode.noContent:
         return;
+      case HttpStatusCode.badRequest:
+        throw new NotAllowedActionError();
       case HttpStatusCode.unauthorized:
         throw new InvalidTokenError();
       case HttpStatusCode.serverError:

@@ -5,6 +5,7 @@ import { TodosTemplate } from '@/presentation/components/templates';
 import { RevalidateCacheNotesVisitor } from '@/presentation/visitors';
 
 import {
+  DeleteNoteUseCase,
   FindNotesUseCase,
   UpdateFinishedNoteUseCase,
 } from '@/domain/use-cases';
@@ -13,12 +14,14 @@ import { Storage } from '@/use-cases/ports/gateways';
 import { InvalidTokenError } from '@/use-cases/errors';
 
 type Props = {
+  deleteNoteUseCase: DeleteNoteUseCase;
   findNotesUseCase: FindNotesUseCase;
   updateFinishedNoteUseCase: UpdateFinishedNoteUseCase;
   storage: Storage;
 };
 
 export const TodosPage: React.FC<Props> = ({
+  deleteNoteUseCase,
   findNotesUseCase,
   updateFinishedNoteUseCase,
   storage,
@@ -98,7 +101,40 @@ export const TodosPage: React.FC<Props> = ({
       });
 
       (updateFinishedNoteUseCase as any).accept(
-        new RevalidateCacheNotesVisitor(page - 1, id, finished, storage)
+        new RevalidateCacheNotesVisitor(page - 1, id, storage)
+      );
+
+      const notes: any[] = storage.get(Storage.KEYS.NOTES);
+      setNotes(notes[page - 1].notes);
+    } catch (err) {
+      if (err instanceof InvalidTokenError) {
+        storage.clear();
+
+        navigate('/sign-in');
+      } else {
+        setToastText((err as Error).message);
+        setShowToast(true);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onDeleteItem = async (id: string): Promise<void> => {
+    const storageValue: { accessToken: string } = storage.get(
+      Storage.KEYS.ACCESS_TOKEN
+    );
+
+    try {
+      setLoading(true);
+
+      await deleteNoteUseCase.execute({
+        accessToken: storageValue.accessToken,
+        id,
+      });
+
+      (deleteNoteUseCase as any).accept(
+        new RevalidateCacheNotesVisitor(page - 1, id, storage)
       );
 
       const notes: any[] = storage.get(Storage.KEYS.NOTES);
@@ -156,6 +192,7 @@ export const TodosPage: React.FC<Props> = ({
       showPagination={showPagination}
       todos={notes}
       onChangeItem={onChangeItem}
+      onDeleteItem={onDeleteItem}
       toastText={toastText}
       showToast={showToast}
       closeToast={handleToastClose}

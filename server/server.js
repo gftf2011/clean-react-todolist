@@ -188,6 +188,39 @@ server.patch('/api/V1/update-finished-note', (req, _res, next) => {
   return res.status(204).end();
 });
 
+server.delete('/api/V1/delete-note', (req, _res, next) => {
+  req.headers.userId = req.headers.authorization.replace('access_token-id:', '');
+  next();
+}, (req, res) => {
+  const { id } = req.body;
+
+  if (!database.users.find((user) => user.id === req.headers.userId)) {
+    return res.status(401).json({
+      statusCode: 401,
+      body: {
+        name: 'Error',
+        message: 'user does not exists',
+      },
+    });
+  }
+
+  const foundNote = database.notes.find(note => note.id === id);
+
+  if (!foundNote || !foundNote.finished) {
+    return res.status(400).json({
+      statusCode: 400,
+      body: {
+        name: 'Error',
+        message: 'not does not exists OR not finished',
+      },
+    });
+  }
+
+  database.notes = database.notes.filter((note) => note.id !== id);
+
+  return res.status(204).end();
+});
+
 server.listen(3000, () => {
   console.log('JSON Server is running');
 });

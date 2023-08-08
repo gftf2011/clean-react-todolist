@@ -20,6 +20,7 @@ type Props = {
     timestamp: string;
   }[];
   onChangeItem: (id: string, finished: boolean) => void | Promise<void>;
+  onDeleteItem: (id: string) => void | Promise<void>;
 };
 
 export const PaginatedTodosList: React.FC<Props> = (props) => {
@@ -29,7 +30,11 @@ export const PaginatedTodosList: React.FC<Props> = (props) => {
         <ListWrapper>
           {props.todos.map((todo) => (
             <ListItem key={todo.id}>
-              <TodoCard onChangeItem={props.onChangeItem} todo={todo} />
+              <TodoCard
+                onDeleteItem={props.onDeleteItem}
+                onChangeItem={props.onChangeItem}
+                todo={todo}
+              />
             </ListItem>
           ))}
         </ListWrapper>

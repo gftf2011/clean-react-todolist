@@ -13,6 +13,7 @@ type Props = {
     timestamp: string;
   };
   onChangeItem: (id: string, finished: boolean) => void | Promise<void>;
+  onDeleteItem: (id: string) => void | Promise<void>;
 };
 
 export const TodoCard: React.FC<Props> = (props) => {
@@ -21,6 +22,13 @@ export const TodoCard: React.FC<Props> = (props) => {
   const onChange = async (): Promise<void> => {
     setIsChecked(!isChecked);
     await props.onChangeItem(props.todo.id, !isChecked);
+  };
+
+  const onClick = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): Promise<void> => {
+    event.preventDefault();
+    await props.onDeleteItem(props.todo.id);
   };
 
   return (
@@ -39,7 +47,11 @@ export const TodoCard: React.FC<Props> = (props) => {
       </div>
       {isChecked && (
         <ActionWrapper>
-          <Button type="button" className="btn-sm square btn-danger">
+          <Button
+            type="button"
+            onClick={onClick}
+            className="btn-sm square btn-danger"
+          >
             <Icon.Trash />
           </Button>
         </ActionWrapper>
