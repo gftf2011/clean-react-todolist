@@ -1,1 +1,2 @@
-export * from './note-slice';
+export * from './current-note-slice';
+export * from './paginated-notes-slice';

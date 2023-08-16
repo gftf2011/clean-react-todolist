@@ -48,7 +48,7 @@ export const SignInPage: React.FC<Props> = ({
     setShowToast(false);
   };
 
-  const validateInputFields = () => {
+  const validateInputFields = (): void => {
     const formData = { email, password };
     const emailErrorMessage = validation.validate('email', formData);
     const passwordErrorMessage = validation.validate('password', formData);

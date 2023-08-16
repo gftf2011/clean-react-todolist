@@ -1,23 +1,67 @@
+/* eslint-disable no-plusplus */
 import { Note } from '@/domain/models';
 
 import { Strategy } from '@/domain/use-cases';
 
 import { Storage } from '@/use-cases/ports/gateways';
 
+export type DeleteCacheNoteDependency = {
+  readonly limit: number;
+  readonly noteId: string;
+  readonly storage: Storage;
+};
+
 export class DeleteCacheNoteStrategy implements Strategy {
-  constructor(
-    private readonly page: number,
-    private readonly noteId: string,
-    private readonly storage: Storage
-  ) {}
+  constructor(private readonly dependencies: DeleteCacheNoteDependency) {}
 
   public invoke(): void {
-    const notes: any[] = this.storage.get(Storage.KEYS.NOTES);
+    const notes: any[] = this.dependencies.storage.get(Storage.KEYS.NOTES);
 
-    notes[this.page].notes = (notes[this.page].notes as Note[]).filter(
-      (value) => value.id !== this.noteId
-    );
+    const allNotes: Note[] = [];
 
-    this.storage.set(Storage.KEYS.NOTES, notes);
+    for (let i = 0; i < notes.length; i++) {
+      for (let j = 0; j < notes[i].notes.length; j++) {
+        if (notes[i].notes[j].id !== this.dependencies.noteId) {
+          allNotes.push(notes[i].notes[j]);
+        }
+      }
+    }
+
+    if (allNotes.length === 0) {
+      this.dependencies.storage.set(Storage.KEYS.NOTES, [
+        {
+          notes: [],
+          previous: false,
+          next: false,
+        },
+      ]);
+
+      return;
+    }
+
+    const rearrengedNotes: any[] = [];
+
+    const pages = Math.ceil(allNotes.length / this.dependencies.limit);
+
+    let itemsCounter = 0;
+    for (let i = 0; i < pages; i++) {
+      const notes: Note[] = [];
+
+      let j = 0;
+      while (j < this.dependencies.limit && itemsCounter < allNotes.length) {
+        notes.push(allNotes[i * this.dependencies.limit + j]);
+        j++;
+        itemsCounter++;
+      }
+
+      const rearrengedNote: any = {
+        notes,
+        previous: i + 1 !== 1,
+        next: i + 1 !== pages,
+      };
+      rearrengedNotes.push(rearrengedNote);
+    }
+
+    this.dependencies.storage.set(Storage.KEYS.NOTES, rearrengedNotes);
   }
 }

@@ -1,7 +1,4 @@
-import { Note } from '@/domain/models';
-
 import { Link } from '@/presentation/components/atoms';
-
 import { LoadingScreen, Toast } from '@/presentation/components/molecules';
 
 import {
@@ -13,16 +10,12 @@ import { MainWrapper } from './styles';
 
 type Props = {
   isLoading: boolean;
-  showPagination: boolean;
-  hasNextPagination: boolean;
-  hasPreviousPagination: boolean;
   previousActionPagination: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void | Promise<void>;
   nextActionPagination: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void | Promise<void>;
-  todos: Note[];
   onChangeItem: (id: string, finished: boolean) => void | Promise<void>;
   onDeleteItem: (id: string) => void | Promise<void>;
   closeToast: (
@@ -49,12 +42,8 @@ export const TodosTemplate: React.FC<Props> = (props) => {
             )}
             <section>
               <PaginatedTodosList
-                hasNextPagination={props.hasNextPagination}
-                hasPreviousPagination={props.hasPreviousPagination}
                 nextActionPagination={props.nextActionPagination}
                 previousActionPagination={props.previousActionPagination}
-                showPagination={props.showPagination}
-                todos={props.todos}
                 onChangeItem={props.onChangeItem}
                 onDeleteItem={props.onDeleteItem}
               />

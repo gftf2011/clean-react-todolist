@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { paginatedNotesActions } from '@/presentation/state-manager/redux-toolkit/actions';
+import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
 
 import { TodosTemplate } from '@/presentation/components/templates';
 import { RevalidateCacheNotesVisitor } from '@/presentation/visitors';
+
+import { useFetchData, useErrorHandler, useLogout } from '@/presentation/hooks';
 
 import {
   DeleteNoteUseCase,
@@ -11,7 +16,6 @@ import {
 } from '@/domain/use-cases';
 
 import { Storage } from '@/use-cases/ports/gateways';
-import { InvalidTokenError } from '@/use-cases/errors';
 
 type Props = {
   deleteNoteUseCase: DeleteNoteUseCase;
@@ -26,145 +30,99 @@ export const TodosPage: React.FC<Props> = ({
   updateFinishedNoteUseCase,
   storage,
 }) => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const limit = 10;
+  const { fetch, loading } = useFetchData();
+  const { handleError } = useErrorHandler();
+  const logout = useLogout();
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
-  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
-  const [showPagination, setShowPagination] = useState<boolean>(false);
+  const page = useSelector((state: RootState) => state.paginatedNotes.page);
+  const limit = useSelector((state: RootState) => state.paginatedNotes.limit);
+
   const [showToast, setShowToast] = useState<boolean>(false);
 
-  const [notes, setNotes] = useState<any[]>([]);
-
   const [toastText, setToastText] = useState<string>('');
-
-  const [page, setPage] = useState<number>(1);
-
-  const fetch = async (): Promise<void> => {
-    try {
-      setLoading(true);
-
-      const storageValue: { accessToken: string } = storage.get(
-        Storage.KEYS.ACCESS_TOKEN
-      );
-
-      const response = await findNotesUseCase.execute({
-        accessToken: storageValue.accessToken,
-        page,
-        limit,
-      });
-
-      setHasNextPage(response.paginatedNotes.next);
-      setHasPreviousPage(response.paginatedNotes.previous);
-      setShowPagination(
-        response.paginatedNotes.next || response.paginatedNotes.previous
-      );
-      setNotes(response.paginatedNotes.notes);
-    } catch (err) {
-      if (err instanceof InvalidTokenError) {
-        storage.clear();
-
-        navigate('/sign-in');
-      } else {
-        setToastText((err as Error).message);
-        setShowToast(true);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleLogOut = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): void => {
     e.preventDefault();
 
-    storage.clear();
+    logout(storage, '/');
+  };
 
-    navigate('/');
+  const operationFailure = handleError((error: Error): void => {
+    setToastText(error.message);
+    setShowToast(true);
+  }, storage);
+
+  const getNotes = async (): Promise<void> => {
+    const operationSuccess = (_arg: any): void => {
+      const notes: any[] = storage.get(Storage.KEYS.NOTES);
+
+      dispatch(paginatedNotesActions.update({ value: notes[page - 1] }));
+    };
+
+    await fetch({
+      useCase: findNotesUseCase,
+      storage,
+      operationSuccess,
+      operationFailure,
+    })({ page: page - 1, limit });
   };
 
   const onChangeItem = async (id: string, finished: boolean): Promise<void> => {
-    const storageValue: { accessToken: string } = storage.get(
-      Storage.KEYS.ACCESS_TOKEN
-    );
-
-    try {
-      setLoading(true);
-
-      await updateFinishedNoteUseCase.execute({
-        accessToken: storageValue.accessToken,
-        finished,
-        noteId: id,
-      });
-
+    const operationSuccess = (_arg: any): void => {
       (updateFinishedNoteUseCase as any).accept(
-        new RevalidateCacheNotesVisitor(page - 1, id, storage)
+        new RevalidateCacheNotesVisitor({ page: page - 1, noteId: id, storage })
       );
-
       const notes: any[] = storage.get(Storage.KEYS.NOTES);
-      setNotes(notes[page - 1].notes);
-    } catch (err) {
-      if (err instanceof InvalidTokenError) {
-        storage.clear();
+      dispatch(paginatedNotesActions.update({ value: notes[page - 1] }));
+    };
 
-        navigate('/sign-in');
-      } else {
-        setToastText((err as Error).message);
-        setShowToast(true);
-      }
-    } finally {
-      setLoading(false);
-    }
+    await fetch({
+      useCase: updateFinishedNoteUseCase,
+      storage,
+      operationSuccess,
+      operationFailure,
+    })({ noteId: id, finished });
   };
 
   const onDeleteItem = async (id: string): Promise<void> => {
-    const storageValue: { accessToken: string } = storage.get(
-      Storage.KEYS.ACCESS_TOKEN
-    );
-
-    try {
-      setLoading(true);
-
-      await deleteNoteUseCase.execute({
-        accessToken: storageValue.accessToken,
-        id,
-      });
-
+    const operationSuccess = (_arg: any): void => {
       (deleteNoteUseCase as any).accept(
-        new RevalidateCacheNotesVisitor(page - 1, id, storage)
+        new RevalidateCacheNotesVisitor({ limit, noteId: id, storage })
       );
-
       const notes: any[] = storage.get(Storage.KEYS.NOTES);
-      setNotes(notes[page - 1].notes);
-    } catch (err) {
-      if (err instanceof InvalidTokenError) {
-        storage.clear();
 
-        navigate('/sign-in');
-      } else {
-        setToastText((err as Error).message);
-        setShowToast(true);
+      let currentPage = page;
+      if (!notes[page]) {
+        currentPage = notes.length;
+        dispatch(paginatedNotesActions.updatePage({ page: currentPage }));
       }
-    } finally {
-      setLoading(false);
-    }
+      dispatch(paginatedNotesActions.update({ value: notes[currentPage - 1] }));
+    };
+
+    await fetch({
+      useCase: deleteNoteUseCase,
+      storage,
+      operationSuccess,
+      operationFailure,
+    })({ id });
   };
 
   const handleNextButton = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): Promise<void> => {
     e.preventDefault();
-    setPage(page + 1);
+    dispatch(paginatedNotesActions.updatePage({ page: page + 1 }));
   };
 
   const handlePreviousButton = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): Promise<void> => {
     e.preventDefault();
-    setPage(page - 1);
+    dispatch(paginatedNotesActions.updatePage({ page: page - 1 }));
   };
 
   const handleToastClose = (
@@ -172,25 +130,22 @@ export const TodosPage: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
     setShowToast(false);
+    setToastText('');
   };
 
   useEffect(() => {
-    fetch();
+    getNotes();
   }, []);
 
   useEffect(() => {
-    fetch();
+    getNotes();
   }, [page]);
 
   return (
     <TodosTemplate
       isLoading={loading}
-      hasNextPagination={hasNextPage}
-      hasPreviousPagination={hasPreviousPage}
       nextActionPagination={handleNextButton}
       previousActionPagination={handlePreviousButton}
-      showPagination={showPagination}
-      todos={notes}
       onChangeItem={onChangeItem}
       onDeleteItem={onDeleteItem}
       toastText={toastText}

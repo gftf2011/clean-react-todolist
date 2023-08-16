@@ -1,9 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { noteSlice } from '../slice';
+import { currentNoteSlice, paginatedNotesSlice } from '../slice';
 
 export const store = configureStore({
   reducer: {
-    note: noteSlice.reducer,
+    currentNote: currentNoteSlice.reducer,
+    paginatedNotes: paginatedNotesSlice.reducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;

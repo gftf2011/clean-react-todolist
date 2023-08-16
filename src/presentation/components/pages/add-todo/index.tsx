@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { CreateNoteUseCase } from '@/domain/use-cases';
 
+import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
+
 import { TodoTemplate } from '@/presentation/components/templates';
+import { RevalidateCacheNotesVisitor } from '@/presentation/visitors';
+
+import { useFetchData, useErrorHandler, useLogout } from '@/presentation/hooks';
 
 import { Storage } from '@/use-cases/ports/gateways';
-import { InvalidTokenError } from '@/use-cases/errors';
 
 type Props = {
   createNoteUseCase: CreateNoteUseCase;
@@ -17,14 +22,19 @@ export const AddTodoPage: React.FC<Props> = ({
   createNoteUseCase,
   storage,
 }) => {
+  const { fetch, loading } = useFetchData();
+  const { handleError } = useErrorHandler();
+  const logout = useLogout();
+
   const navigate = useNavigate();
+
+  const limit = useSelector((state: RootState) => state.paginatedNotes.limit);
 
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [toastText, setToastText] = useState<string>('');
 
   const [showToast, setShowToast] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const handleTitleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
@@ -41,9 +51,7 @@ export const AddTodoPage: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
 
-    storage.clear();
-
-    navigate('/');
+    logout(storage, '/');
   };
 
   const handleToastClose = (
@@ -51,40 +59,40 @@ export const AddTodoPage: React.FC<Props> = ({
   ): void => {
     e.preventDefault();
     setShowToast(false);
+    setToastText('');
   };
+
+  const operationFailure = handleError((error: Error): void => {
+    setTitle('');
+    setDescription('');
+    setToastText(error.message);
+    setShowToast(true);
+  }, storage);
 
   const handleOnSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
 
-    try {
-      setLoading(true);
-
-      const storageValue: { accessToken: string } = storage.get(
-        Storage.KEYS.ACCESS_TOKEN
+    const operationSuccess = (note: any): void => {
+      (createNoteUseCase as any).accept(
+        new RevalidateCacheNotesVisitor({
+          limit,
+          note,
+          storage,
+        })
       );
+    };
 
-      await createNoteUseCase.execute({
-        accessToken: storageValue.accessToken,
-        title,
-        description,
-      });
+    const note = await fetch({
+      useCase: createNoteUseCase,
+      storage,
+      operationSuccess,
+      operationFailure,
+    })({ title, description });
 
+    if (note && 'id' in note) {
       navigate('/todos');
-    } catch (err) {
-      if (err instanceof InvalidTokenError) {
-        storage.clear();
-
-        navigate('/sign-in');
-      } else {
-        setTitle('');
-        setDescription('');
-        setToastText((err as Error).message);
-        setShowToast(true);
-      }
-    } finally {
-      setLoading(false);
     }
   };
 

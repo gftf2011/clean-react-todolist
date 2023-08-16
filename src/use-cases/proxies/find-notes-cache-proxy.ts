@@ -12,7 +12,7 @@ type NoteCache = {
 
 export class FindNotesCacheUseCaseProxy implements FindNotesUseCase {
   constructor(
-    private readonly interactor: FindNotesUseCase,
+    private readonly interator: FindNotesUseCase,
     private readonly storage: Storage
   ) {}
 
@@ -21,20 +21,16 @@ export class FindNotesCacheUseCaseProxy implements FindNotesUseCase {
   ): Promise<FindNotesUseCase.Output> {
     const notesCache: NoteCache[] = this.storage.get(Storage.KEYS.NOTES);
 
-    if (!notesCache) {
-      const response = await this.interactor.execute(input);
+    if (
+      !notesCache ||
+      !notesCache[input.page] ||
+      notesCache[input.page].notes.length === 0
+    ) {
+      const response = await this.interator.execute(input);
 
-      this.storage.set(Storage.KEYS.NOTES, [response.paginatedNotes]);
+      notesCache[input.page] = response.paginatedNotes;
 
-      return response;
-    }
-    if (!notesCache[input.page]) {
-      const response = await this.interactor.execute(input);
-
-      this.storage.set(Storage.KEYS.NOTES, [
-        ...notesCache,
-        response.paginatedNotes,
-      ]);
+      this.storage.set(Storage.KEYS.NOTES, notesCache);
 
       return response;
     }

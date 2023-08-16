@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
-import { store } from '@/presentation/state-manager/redux-toolkit';
+import { store } from '@/presentation/state-manager/redux-toolkit/store';
 
 type Props = {
   routes: RouteObject[];

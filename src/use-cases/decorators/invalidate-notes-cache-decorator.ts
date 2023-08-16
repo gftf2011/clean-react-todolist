@@ -11,7 +11,9 @@ export class InvalidateNotesCacheUseCaseDecorator implements UseCase {
   public async execute(input: any): Promise<any> {
     const response = await this.interactor.execute(input);
 
-    this.storage.set(Storage.KEYS.NOTES, null);
+    this.storage.set(Storage.KEYS.NOTES, [
+      { notes: [], previous: false, next: false },
+    ]);
 
     return response;
   }

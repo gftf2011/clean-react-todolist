@@ -1,4 +1,4 @@
-import { CreateNoteUseCase } from '@/domain/use-cases';
+import { CreateNoteUseCase, Visitor } from '@/domain/use-cases';
 
 import { HttpClient, HttpStatusCode } from '@/use-cases/ports/gateways';
 import {
@@ -10,12 +10,17 @@ import {
 } from '@/use-cases/errors';
 
 export class CreateNoteUseCaseImpl implements CreateNoteUseCase {
+  type?: string | undefined = 'create';
+
   constructor(
     private readonly url: string,
-    private readonly httpClient: HttpClient<void>
+    private readonly httpClient: HttpClient<CreateNoteUseCase.Output>
   ) {}
 
-  public async execute(input: CreateNoteUseCase.Input): Promise<void> {
+  public async execute(
+    input: CreateNoteUseCase.Input
+  ): Promise<CreateNoteUseCase.Output> {
+    // Should return the new note
     const response = await this.httpClient.request({
       url: `${this.url}/api/V1/create-note`,
       method: 'post',
@@ -30,7 +35,7 @@ export class CreateNoteUseCaseImpl implements CreateNoteUseCase {
 
     switch (response.statusCode) {
       case HttpStatusCode.created:
-        return;
+        return response.body as CreateNoteUseCase.Output;
       case HttpStatusCode.badRequest:
         throw new RequiredFieldError();
       case HttpStatusCode.unauthorized:
@@ -42,5 +47,9 @@ export class CreateNoteUseCaseImpl implements CreateNoteUseCase {
       default:
         throw new UnknownError();
     }
+  }
+
+  public accept(visitor: Visitor): void {
+    visitor.visit(this);
   }
 }

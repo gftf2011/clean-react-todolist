@@ -1,7 +1,11 @@
+import { Note } from '../models';
+
 import { UseCase } from './base';
 
 export interface CreateNoteUseCase extends UseCase {
-  execute: (input: CreateNoteUseCase.Input) => Promise<void>;
+  execute: (
+    input: CreateNoteUseCase.Input
+  ) => Promise<CreateNoteUseCase.Output>;
 }
 
 export namespace CreateNoteUseCase {
@@ -10,4 +14,6 @@ export namespace CreateNoteUseCase {
     title: string;
     description: string;
   };
+
+  export type Output = Note;
 }

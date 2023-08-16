@@ -1,7 +1,11 @@
+import { Note } from '../models';
+
 import { UseCase } from './base';
 
 export interface UpdateFinishedNoteUseCase extends UseCase {
-  execute: (input: UpdateFinishedNoteUseCase.Input) => Promise<void>;
+  execute: (
+    input: UpdateFinishedNoteUseCase.Input
+  ) => Promise<UpdateFinishedNoteUseCase.Output>;
 }
 
 export namespace UpdateFinishedNoteUseCase {
@@ -10,4 +14,5 @@ export namespace UpdateFinishedNoteUseCase {
     noteId: string;
     finished: boolean;
   };
+  export type Output = Note;
 }

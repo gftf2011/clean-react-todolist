@@ -42,13 +42,21 @@ server.get('/api/V1/find-notes', (req, _res, next) => {
     timestamp: note.updatedAt,
   }));
 
+  const nextNotes = filteredNotes.slice(page * limit, (page + 1) * limit).map(note => ({
+    id: note.id,
+    title: note.title,
+    description: note.description,
+    finished: note.finished,
+    timestamp: note.updatedAt,
+  }));
+
   return res.status(200).json({
     statusCode: 200,
     body: {
       paginatedNotes: {
         notes,
-        previous: false,
-        next: false,
+        previous: page > 1,
+        next: (nextNotes && nextNotes.length > 0),
       },
     },
   });
@@ -145,7 +153,7 @@ server.post('/api/V1/create-note', (req, _res, next) => {
 
   const date = new Date().toISOString();
 
-  database.notes.push({
+  const note = {
     id: v4(),
     title,
     description,
@@ -153,11 +161,13 @@ server.post('/api/V1/create-note', (req, _res, next) => {
     userId: req.headers.userId,
     createdAt: date,
     updatedAt: date,
-  });
+  };
+
+  database.notes.push(note);
 
   return res.status(201).json({
     statusCode: 201,
-    body: { created: true },
+    body: note,
   });
 });
 
@@ -185,7 +195,10 @@ server.patch('/api/V1/update-finished-note', (req, _res, next) => {
     return note;
   });
 
-  return res.status(204).end();
+  return res.status(200).json({
+    statusCode: 200,
+    body: database.notes.find(note => note.id === id),
+  });
 });
 
 server.delete('/api/V1/delete-note', (req, _res, next) => {
@@ -206,7 +219,7 @@ server.delete('/api/V1/delete-note', (req, _res, next) => {
 
   const foundNote = database.notes.find(note => note.id === id);
 
-  if (!foundNote || !foundNote.finished) {
+  if (!foundNote?.finished) {
     return res.status(400).json({
       statusCode: 400,
       body: {

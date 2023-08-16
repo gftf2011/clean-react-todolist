@@ -14,10 +14,12 @@ export class UpdateFinishedNoteUseCaseImpl
 
   constructor(
     private readonly url: string,
-    private readonly httpClient: HttpClient<void>
+    private readonly httpClient: HttpClient<UpdateFinishedNoteUseCase.Output>
   ) {}
 
-  public async execute(input: UpdateFinishedNoteUseCase.Input): Promise<void> {
+  public async execute(
+    input: UpdateFinishedNoteUseCase.Input
+  ): Promise<UpdateFinishedNoteUseCase.Output> {
     const response = await this.httpClient.request({
       url: `${this.url}/api/V1/update-finished-note`,
       method: 'patch',
@@ -31,8 +33,8 @@ export class UpdateFinishedNoteUseCaseImpl
     });
 
     switch (response.statusCode) {
-      case HttpStatusCode.noContent:
-        return;
+      case HttpStatusCode.ok:
+        return response.body as UpdateFinishedNoteUseCase.Output;
       case HttpStatusCode.unauthorized:
         throw new InvalidTokenError();
       case HttpStatusCode.serverError:

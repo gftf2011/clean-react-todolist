@@ -65,7 +65,7 @@ export const SignUpPage: React.FC<Props> = ({
     setShowToast(false);
   };
 
-  const validateInputFields = () => {
+  const validateInputFields = (): void => {
     const formData = { email, password, name, lastname };
     const nameErrorMessage = validation.validate('name', formData);
     const lastnameErrorMessage = validation.validate('lastname', formData);

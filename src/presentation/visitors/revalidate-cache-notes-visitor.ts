@@ -1,46 +1,46 @@
 /* eslint-disable max-classes-per-file */
 import { Strategy, UseCase, Visitor } from '@/domain/use-cases';
 
-import { Storage } from '@/use-cases/ports/gateways';
 import { CacheRevalidationError } from '@/use-cases/errors';
 
 import {
+  AddCacheNoteDependency,
+  DeleteCacheNoteDependency,
+  UpdateCacheNoteDependency,
   DeleteCacheNoteStrategy,
+  AddCacheNoteStrategy,
   UpdateCacheNoteStrategy,
 } from '@/presentation/strategies';
 
-type FactoryOutput = (
-  page: number,
-  noteId: string,
-  storage: Storage
-) => Strategy;
+type RevalidateCacheNotesDependency =
+  | AddCacheNoteDependency
+  | DeleteCacheNoteDependency
+  | UpdateCacheNoteDependency;
+
+type FactoryOutput = (dependency: RevalidateCacheNotesDependency) => Strategy;
 
 class RevalidateCacheFactory {
   static create({ type }: UseCase): FactoryOutput {
     if (type && type === 'update') {
-      return (page: number, noteId: string, storage: Storage) =>
-        new UpdateCacheNoteStrategy(page, noteId, storage);
+      return (dependency: RevalidateCacheNotesDependency) =>
+        new UpdateCacheNoteStrategy(dependency as UpdateCacheNoteDependency);
     }
     if (type && type === 'delete') {
-      return (page: number, noteId: string, storage: Storage) =>
-        new DeleteCacheNoteStrategy(page, noteId, storage);
+      return (dependency: RevalidateCacheNotesDependency) =>
+        new DeleteCacheNoteStrategy(dependency as DeleteCacheNoteDependency);
+    }
+    if (type && type === 'create') {
+      return (dependency: RevalidateCacheNotesDependency) =>
+        new AddCacheNoteStrategy(dependency as AddCacheNoteDependency);
     }
     throw new CacheRevalidationError();
   }
 }
 
 export class RevalidateCacheNotesVisitor implements Visitor {
-  constructor(
-    private readonly page: number,
-    private readonly noteId: string,
-    private readonly storage: Storage
-  ) {}
+  constructor(private readonly dependency: RevalidateCacheNotesDependency) {}
 
-  public visit(iteractor: UseCase): void {
-    RevalidateCacheFactory.create(iteractor)(
-      this.page,
-      this.noteId,
-      this.storage
-    ).invoke();
+  public visit(iterator: UseCase): void {
+    RevalidateCacheFactory.create(iterator)(this.dependency).invoke();
   }
 }
