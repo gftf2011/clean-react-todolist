@@ -23,6 +23,14 @@ export class DeleteCacheNoteStrategy implements Strategy {
       for (let j = 0; j < notes[i].notes.length; j++) {
         if (notes[i].notes[j].id !== this.dependencies.noteId) {
           allNotes.push(notes[i].notes[j]);
+        } else if (
+          notes[i].notes[j].id === this.dependencies.noteId &&
+          !notes[i].notes[j].finished
+        ) {
+          throw new Error('task not finished');
+        } else {
+          // eslint-disable-next-line no-continue
+          continue;
         }
       }
     }

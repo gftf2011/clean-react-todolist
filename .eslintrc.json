@@ -24,6 +24,7 @@
     "import/export": "off",
     "import/extensions": "off",
     "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
     "sort-imports": "off",
     "no-param-reassign": "off",
     "no-useless-return": "off",
