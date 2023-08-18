@@ -86,7 +86,7 @@ describe('FEATURE - Delete Cache Note Strategy', () => {
 
       const throwError = () => sut.invoke();
 
-      expect(throwError).toThrowError(new Error('task not finished'));
+      expect(throwError).toThrowError(new Error('note not finished'));
     });
 
     it('GIVEN "NOTES" storage has 2 notes THEN should delete selected note', () => {

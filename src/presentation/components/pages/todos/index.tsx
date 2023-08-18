@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Note } from '@/domain/models';
+
 import { paginatedNotesActions } from '@/presentation/state-manager/redux-toolkit/actions';
 import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
 
@@ -72,9 +74,14 @@ export const TodosPage: React.FC<Props> = ({
   };
 
   const onChangeItem = async (id: string, finished: boolean): Promise<void> => {
-    const operationSuccess = (_arg: any): void => {
+    const operationSuccess = (note: Note): void => {
       (updateFinishedNoteUseCase as any).accept(
-        new RevalidateCacheNotesVisitor({ page: page - 1, noteId: id, storage })
+        new RevalidateCacheNotesVisitor({
+          page: page - 1,
+          noteId: id,
+          storage,
+          finished: note.finished,
+        })
       );
       const notes: any[] = storage.get(Storage.KEYS.NOTES);
       dispatch(paginatedNotesActions.update({ value: notes[page - 1] }));

@@ -20,7 +20,7 @@ export default defineConfig({
     coverage: {
       all: true,
       include: ['src'],
-      provider: 'istanbul',
+      provider: 'v8',
       reporter: ['clover', 'cobertura', 'lcov', 'text'],
     },
   },

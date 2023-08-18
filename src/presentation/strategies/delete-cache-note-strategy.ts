@@ -27,7 +27,7 @@ export class DeleteCacheNoteStrategy implements Strategy {
           notes[i].notes[j].id === this.dependencies.noteId &&
           !notes[i].notes[j].finished
         ) {
-          throw new Error('task not finished');
+          throw new Error('note not finished');
         } else {
           // eslint-disable-next-line no-continue
           continue;

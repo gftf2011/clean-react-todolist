@@ -11,6 +11,7 @@
       "@/*": ["*"],
       "@/tests/*": ["../tests/*"]
     },
+    "sourceMap": true
   },
   "include": ["vite.config.ts"],
 }

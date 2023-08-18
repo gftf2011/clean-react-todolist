@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import { Note } from '@/domain/models';
 import { CreateNoteUseCase } from '@/domain/use-cases';
 
 import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
@@ -74,7 +75,7 @@ export const AddTodoPage: React.FC<Props> = ({
   ): Promise<void> => {
     event.preventDefault();
 
-    const operationSuccess = (note: any): void => {
+    const operationSuccess = (note: Note): void => {
       (createNoteUseCase as any).accept(
         new RevalidateCacheNotesVisitor({
           limit,

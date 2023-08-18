@@ -10,6 +10,7 @@
       "@/*": ["*"],
       "@/tests/*": ["../tests/*"]
     },
+    "sourceMap": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
