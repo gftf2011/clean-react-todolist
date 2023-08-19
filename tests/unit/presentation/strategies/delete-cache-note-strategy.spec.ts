@@ -8,7 +8,7 @@ import { NoteBuilder } from '@/tests/builders';
 import { LocalStorageMock } from '@/tests/doubles/mocks/infra/gateways';
 
 describe('FEATURE - Delete Cache Note Strategy', () => {
-  describe('SCENARIO - pagination limit is equal to 1', () => {
+  describe('BACKGROUND - pagination limit is equal to 1', () => {
     const limit = 1;
 
     it('GIVEN "NOTES" storage is an empty array THEN should reset "NOTES" storage state', () => {
@@ -326,7 +326,7 @@ describe('FEATURE - Delete Cache Note Strategy', () => {
     });
   });
 
-  describe('SCENARIO - pagination limit is equal to 2', () => {
+  describe('BACKGROUND - pagination limit is equal to 2', () => {
     const limit = 2;
 
     it('GIVEN "NOTES" storage is an empty array THEN should reset "NOTES" storage state', () => {

@@ -8,7 +8,7 @@ import { NoteBuilder } from '@/tests/builders';
 import { LocalStorageMock } from '@/tests/doubles/mocks/infra/gateways';
 
 describe('FEATURE - Update Cache Note Strategy', () => {
-  describe('SCENARIO - Note do not exists to update', () => {
+  describe('BACKGROUND - Note do not exists to update', () => {
     it('GIVEN "NOTES" storage is empty THEN should throw error', () => {
       const note = NoteBuilder.note().build();
 
@@ -76,7 +76,7 @@ describe('FEATURE - Update Cache Note Strategy', () => {
     });
   });
 
-  describe('SCENARIO - Note exists to update', () => {
+  describe('BACKGROUND - Note exists to update', () => {
     it('GIVEN "NOTES" storage has a note WHEN finished status is "false" THEN should update note status to "true"', () => {
       const note = NoteBuilder.note().build();
 
