@@ -13,14 +13,14 @@ describe('Email Validation', () => {
     expect(() => sut.validate(input)).not.toThrow();
   });
 
-  it('GIVEN validation field is empty THEN must throw new "RequiredFieldError"', () => {
+  it('GIVEN validation field is empty THEN must throw new "InvalidFieldError"', () => {
     const field = 'field';
     const sut = new EmailValidation(field);
     const input = {};
     expect(() => sut.validate(input)).toThrowError(new InvalidFieldError());
   });
 
-  it('GIVEN validation field is not empty WHEN is not a valid email THEN must throw new "RequiredFieldError"', () => {
+  it('GIVEN validation field is not empty WHEN is not a valid email THEN must throw new "InvalidFieldError"', () => {
     const field = 'field';
     const sut = new EmailValidation(field);
     const input = {
