@@ -7,7 +7,7 @@ import { AxiosHttpClient, LocalStorage } from '@/infra/gateways';
 
 export const makeSignUpUseCase = (): UseCase => {
   const httpClient = new AxiosHttpClient();
-  const storage = new LocalStorage();
+  const storage = LocalStorage.getInstance();
 
   const signUpUseCase = new SignUpUseCaseImpl(
     import.meta.env.VITE_BASE_URL,

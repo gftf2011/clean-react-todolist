@@ -11,12 +11,12 @@ import { LocalStorage } from '@/infra/gateways';
 
 export const makeTodos: React.FC = () => {
   return (
-    <PrivateRoute storage={new LocalStorage()}>
+    <PrivateRoute storage={LocalStorage.getInstance()}>
       <TodosPage
         deleteNoteUseCase={makeDeleteNoteUseCase()}
         findNotesUseCase={makeFindNotesUseCase()}
         updateFinishedNoteUseCase={makeUpdateFinishedNoteUseCase()}
-        storage={new LocalStorage()}
+        storage={LocalStorage.getInstance()}
       />
     </PrivateRoute>
   );

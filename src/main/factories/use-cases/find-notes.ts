@@ -7,7 +7,7 @@ import { AxiosHttpClient, LocalStorage } from '@/infra/gateways';
 
 export const makeFindNotesUseCase = (): UseCase => {
   const httpClient = new AxiosHttpClient();
-  const storage = new LocalStorage();
+  const storage = LocalStorage.getInstance();
 
   const findNotesUseCase = new FindNotesUseCaseImpl(
     import.meta.env.VITE_BASE_URL,

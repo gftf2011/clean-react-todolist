@@ -9,11 +9,11 @@ import { SignedInRoute } from '@/main/proxies';
 
 export const makeSignUp: React.FC = () => {
   return (
-    <SignedInRoute storage={new LocalStorage()}>
+    <SignedInRoute storage={LocalStorage.getInstance()}>
       <SignUpPage
         validation={makeSignUpValidation()}
         signUpUseCase={makeSignUpUseCase()}
-        storage={new LocalStorage()}
+        storage={LocalStorage.getInstance()}
       />
     </SignedInRoute>
   );

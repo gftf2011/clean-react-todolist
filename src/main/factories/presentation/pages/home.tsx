@@ -8,7 +8,7 @@ import { SignedInRoute } from '@/main/proxies';
 
 export const makeHome: React.FC<any> = () => {
   return (
-    <SignedInRoute storage={new LocalStorage()}>
+    <SignedInRoute storage={LocalStorage.getInstance()}>
       <HomePage />
     </SignedInRoute>
   );

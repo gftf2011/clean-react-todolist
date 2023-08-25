@@ -6,8 +6,13 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     globals: true,
-    environment: 'happy-dom',
-    include: ['**/tests/**/*.spec.ts', '**/tests/**/*.test.ts'],
+    environment: 'jsdom',
+    include: [
+      '**/tests/**/*.spec.ts',
+      '**/tests/**/*.test.ts',
+      '**/tests/**/*.spec.tsx',
+      '**/tests/**/*.test.tsx',
+    ],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',

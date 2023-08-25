@@ -7,10 +7,10 @@ import { LocalStorage } from '@/infra/gateways';
 
 export const makeAddTodo: React.FC = () => {
   return (
-    <PrivateRoute storage={new LocalStorage()}>
+    <PrivateRoute storage={LocalStorage.getInstance()}>
       <AddTodoPage
         createNoteUseCase={makeCreateNoteUseCase()}
-        storage={new LocalStorage()}
+        storage={LocalStorage.getInstance()}
       />
     </PrivateRoute>
   );
