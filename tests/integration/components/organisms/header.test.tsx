@@ -31,34 +31,7 @@ const ElementWrapper: React.FC<Props> = ({ children }) => {
   );
 };
 
-const routes = [
-  {
-    path: '/',
-    element: (
-      <ElementWrapper>
-        <Header.Default />
-      </ElementWrapper>
-    ),
-  },
-  {
-    path: '/sign-up',
-    element: (
-      <ElementWrapper>
-        <Header.Default />
-      </ElementWrapper>
-    ),
-  },
-  {
-    path: '/sign-in',
-    element: (
-      <ElementWrapper>
-        <Header.Default />
-      </ElementWrapper>
-    ),
-  },
-];
-
-const Sut: React.FC = () => {
+const Sut: React.FC<{ routes: any[] }> = ({ routes }) => {
   const router = createMemoryRouter(routes);
 
   return (
@@ -69,20 +42,47 @@ const Sut: React.FC = () => {
 };
 
 describe('FEATURE - Header Component', () => {
-  describe('BACKGROUND - Desktop Screen', () => {
-    beforeEach(() => {
-      resizeScreenSize(1200);
-    });
+  describe('BACKGROUND - Logged out', () => {
+    const routes = [
+      {
+        path: '/',
+        element: (
+          <ElementWrapper>
+            <Header.Default />
+          </ElementWrapper>
+        ),
+      },
+      {
+        path: '/sign-up',
+        element: (
+          <ElementWrapper>
+            <Header.Default />
+          </ElementWrapper>
+        ),
+      },
+      {
+        path: '/sign-in',
+        element: (
+          <ElementWrapper>
+            <Header.Default />
+          </ElementWrapper>
+        ),
+      },
+    ];
 
-    describe('SCENARIO - Logged out', () => {
+    describe('SCENARIO - Desktop Screen', () => {
+      beforeEach(() => {
+        resizeScreenSize(1200);
+      });
+
       it('GIVEN page is rendered THEN display path "/"', () => {
-        render(<Sut />);
+        render(<Sut routes={routes} />);
         const { getByText } = within(screen.getByTestId('location-display'));
         expect(getByText('/', { exact: true })).toBeInTheDocument();
       });
 
       it('GIVEN page is rendered WHEN user click in sign-in link THEN redirect to "/sign-in"', async () => {
-        const app = render(<Sut />);
+        const app = render(<Sut routes={routes} />);
 
         const listItems = app.container
           .querySelector('#header-desktop-navigation')
@@ -101,7 +101,7 @@ describe('FEATURE - Header Component', () => {
       });
 
       it('GIVEN page is rendered WHEN user click in sign-up link THEN redirect to "/sign-up"', async () => {
-        const app = render(<Sut />);
+        const app = render(<Sut routes={routes} />);
 
         const listItems = app.container
           .querySelector('#header-desktop-navigation')
@@ -123,22 +123,20 @@ describe('FEATURE - Header Component', () => {
         cleanup();
       });
     });
-  });
 
-  describe('BACKGROUND - Mobile Screen', () => {
-    beforeEach(() => {
-      resizeScreenSize(768);
-    });
+    describe('SCENARIO - Mobile Screen', () => {
+      beforeEach(() => {
+        resizeScreenSize(768);
+      });
 
-    describe('SCENARIO - Logged out', () => {
       it('GIVEN page is rendered THEN display path "/"', () => {
-        render(<Sut />);
+        render(<Sut routes={routes} />);
         const { getByText } = within(screen.getByTestId('location-display'));
         expect(getByText('/', { exact: true })).toBeInTheDocument();
       });
 
       it('GIVEN page is rendered AND drop down button was not pressed THEN must not display mobile navigation item', () => {
-        const app = render(<Sut />);
+        const app = render(<Sut routes={routes} />);
 
         const dropdownNavigation = app.container.querySelector(
           '#header-mobile-navigation'
@@ -148,7 +146,7 @@ describe('FEATURE - Header Component', () => {
       });
 
       it('GIVEN page is rendered AND drop down button was pressed THEN must display mobile navigation item', async () => {
-        const app = render(<Sut />);
+        const app = render(<Sut routes={routes} />);
         const user = userEvent.setup();
 
         const dropdownButton = app.container.querySelector(
@@ -165,7 +163,7 @@ describe('FEATURE - Header Component', () => {
       });
 
       it('GIVEN page is rendered WHEN drop down button was pressed AND user click in sign-in link THEN redirect to "/sign-in"', async () => {
-        const app = render(<Sut />);
+        const app = render(<Sut routes={routes} />);
         const user = userEvent.setup();
 
         const dropdownButton = app.container.querySelector(
@@ -188,7 +186,7 @@ describe('FEATURE - Header Component', () => {
       });
 
       it('GIVEN page is rendered WHEN drop down button was pressed AND user click in sign-up link THEN redirect to "/sign-up"', async () => {
-        const app = render(<Sut />);
+        const app = render(<Sut routes={routes} />);
         const user = userEvent.setup();
 
         const dropdownButton = app.container.querySelector(
@@ -208,6 +206,82 @@ describe('FEATURE - Header Component', () => {
         const { getByText } = within(screen.getByTestId('location-display'));
 
         expect(getByText('/sign-up', { exact: true })).toBeInTheDocument();
+      });
+
+      afterEach(() => {
+        cleanup();
+      });
+    });
+  });
+
+  describe('BACKGROUND - Logged In', () => {
+    describe('SCENARIO - Desktop Screen', () => {
+      beforeEach(() => {
+        resizeScreenSize(1200);
+      });
+
+      it('GIVEN page is rendered WHEN click in log-out button THEN must fire action', async () => {
+        let counter = 0;
+        const routes = [
+          {
+            path: '/',
+            element: (
+              <Header.SignedIn
+                onClick={(_e: any) => {
+                  counter++;
+                }}
+              />
+            ),
+          },
+        ];
+        const app = render(<Sut routes={routes} />);
+        const user = userEvent.setup();
+
+        const logoutButton = app.container.querySelector('#log-out-desktop');
+
+        await user.click(logoutButton as HTMLElement);
+
+        expect(counter).toBe(1);
+      });
+
+      afterEach(() => {
+        cleanup();
+      });
+    });
+
+    describe('SCENARIO - Mobile Screen', () => {
+      beforeEach(() => {
+        resizeScreenSize(768);
+      });
+
+      it('GIVEN page is rendered WHEN dorp down button is pressed AND click in log-out button THEN must fire action', async () => {
+        let counter = 0;
+        const routes = [
+          {
+            path: '/',
+            element: (
+              <Header.SignedIn
+                onClick={(_e: any) => {
+                  counter++;
+                }}
+              />
+            ),
+          },
+        ];
+        const app = render(<Sut routes={routes} />);
+        const user = userEvent.setup();
+
+        const dropdownButton = app.container.querySelector(
+          '.header-mobile-dropdown-button'
+        );
+
+        await user.click(dropdownButton as HTMLElement);
+
+        const logoutButton = app.container.querySelector('#log-out-mobile');
+
+        await user.click(logoutButton as HTMLElement);
+
+        expect(counter).toBe(1);
       });
 
       afterEach(() => {
