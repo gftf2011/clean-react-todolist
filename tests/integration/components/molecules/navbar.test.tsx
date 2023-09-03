@@ -10,10 +10,10 @@ describe('FEATURE - Navbar Component', () => {
   it('GIVEN navbar is rendered THEN must show all list items', () => {
     const app = render(
       <Navbar>
-        <p>item1</p>
-        <p>item2</p>
-        <p>item3</p>
-        <p>item4</p>
+        <p key={1}>item1</p>
+        <p key={2}>item2</p>
+        <p key={3}>item3</p>
+        <p key={4}>item4</p>
       </Navbar>
     );
 

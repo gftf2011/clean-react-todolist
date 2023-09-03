@@ -19,7 +19,7 @@ const initialState: PaginatesdNotesState = {
     next: false,
   },
   page: 1,
-  limit: 2,
+  limit: 10,
 };
 
 export const paginatedNotesSlice = createSlice({

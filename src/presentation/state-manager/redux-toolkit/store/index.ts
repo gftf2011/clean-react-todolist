@@ -1,12 +1,23 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  combineReducers,
+  PreloadedState as State,
+} from '@reduxjs/toolkit';
 
 import { currentNoteSlice, paginatedNotesSlice } from '../slice';
 
-export const store = configureStore({
-  reducer: {
-    currentNote: currentNoteSlice.reducer,
-    paginatedNotes: paginatedNotesSlice.reducer,
-  },
+const rootReducer = combineReducers({
+  currentNote: currentNoteSlice.reducer,
+  paginatedNotes: paginatedNotesSlice.reducer,
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
+
+export type PreloadedState = State<RootState>;
+
+export const setupStore = (preloadedState?: PreloadedState) => {
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState,
+  });
+};

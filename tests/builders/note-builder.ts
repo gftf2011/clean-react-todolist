@@ -20,6 +20,16 @@ export class NoteBuilder {
     return this;
   }
 
+  public withCustomTitle(value: string): NoteBuilder {
+    this.note.title = value;
+    return this;
+  }
+
+  public withCustomDescription(value: string): NoteBuilder {
+    this.note.description = value;
+    return this;
+  }
+
   public withFinishedStatus(): NoteBuilder {
     this.note.finished = true;
     return this;
