@@ -2,6 +2,7 @@ export * from './cache-revalidation.error';
 export * from './email-already-exists.error';
 export * from './email-does-not-exists.error';
 export * from './invalid-credentials.error';
+export * from './invalid-note-information.error';
 export * from './invalid-token.error';
 export * from './not-allowed-action.error';
 export * from './password-does-not-match.error';

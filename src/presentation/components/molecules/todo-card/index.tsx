@@ -1,6 +1,12 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Input, Button, Icon } from '@/presentation/components/atoms';
+import { currentNoteActions } from '@/presentation/state-manager/redux-toolkit/actions';
+import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
 
 import { Wrapper, CheckboxWrapper, ActionWrapper } from './styles';
 
@@ -17,6 +23,11 @@ type Props = {
 };
 
 export const TodoCard: React.FC<Props> = (props) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const page = useSelector((state: RootState) => state.paginatedNotes.page);
+
   const [isChecked, setIsChecked] = useState<boolean>(props.todo.finished);
 
   const onChange = async (): Promise<void> => {
@@ -31,6 +42,18 @@ export const TodoCard: React.FC<Props> = (props) => {
     await props.onDeleteItem(props.todo.id);
   };
 
+  const onSelect = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ): void => {
+    event.preventDefault();
+    dispatch(
+      currentNoteActions.update({
+        value: { description: props.todo.description, title: props.todo.title },
+      })
+    );
+    navigate(`/edit-todo/${props.todo.id}?page=${page}`);
+  };
+
   return (
     <Wrapper>
       <CheckboxWrapper>
@@ -41,7 +64,7 @@ export const TodoCard: React.FC<Props> = (props) => {
           onChange={onChange}
         />
       </CheckboxWrapper>
-      <div className={isChecked ? 'shrink' : ''}>
+      <div onClick={onSelect} role="link" className={isChecked ? 'shrink' : ''}>
         <h3>{props.todo.title}</h3>
         <small>{props.todo.description}</small>
       </div>

@@ -1,48 +1,32 @@
 import '@testing-library/jest-dom';
 
-import React from 'react';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { describe, it, expect, afterEach } from 'vitest';
 
-import { cleanup, render, within } from '@testing-library/react';
+import { cleanup, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { Provider } from 'react-redux';
-
 import { PaginatedTodosList } from '@/presentation/components/organisms';
-import {
-  setupStore,
-  PreloadedState,
-} from '@/presentation/state-manager/redux-toolkit/store';
 
 import { NoteBuilder } from '@/tests/builders';
 
-type Props = {
-  children: any;
-  // eslint-disable-next-line react/require-default-props
-  preloadedState?: PreloadedState;
-};
+import { renderWithProviders } from '@/tests/utils';
 
-const ElementWrapper: React.FC<Props> = ({ children, preloadedState }) => {
-  const store = setupStore(preloadedState);
+const NavigationRenderer: React.FC<{ routes: any[] }> = ({ routes }) => {
+  const router = createMemoryRouter(routes);
 
-  return (
-    <React.StrictMode>
-      <Provider store={store}>{children}</Provider>
-    </React.StrictMode>
-  );
+  return <RouterProvider router={router} />;
 };
 
 describe('FEATURE - Paginated Todo List Component', () => {
   it('GIVEN lists is empty THEN must display message', () => {
-    const app = render(
-      <ElementWrapper>
-        <PaginatedTodosList
-          nextActionPagination={() => {}}
-          onChangeItem={() => {}}
-          onDeleteItem={() => {}}
-          previousActionPagination={() => {}}
-        />
-      </ElementWrapper>
+    const app = renderWithProviders(
+      <PaginatedTodosList
+        nextActionPagination={() => {}}
+        onChangeItem={() => {}}
+        onDeleteItem={() => {}}
+        previousActionPagination={() => {}}
+      />
     );
 
     const title = app.container.querySelector('h3');
@@ -54,15 +38,13 @@ describe('FEATURE - Paginated Todo List Component', () => {
   });
 
   it('GIVEN next property is "false" AND previous property is "false" THEN must not display pagination component', () => {
-    const app = render(
-      <ElementWrapper>
-        <PaginatedTodosList
-          nextActionPagination={() => {}}
-          onChangeItem={() => {}}
-          onDeleteItem={() => {}}
-          previousActionPagination={() => {}}
-        />
-      </ElementWrapper>
+    const app = renderWithProviders(
+      <PaginatedTodosList
+        nextActionPagination={() => {}}
+        onChangeItem={() => {}}
+        onDeleteItem={() => {}}
+        previousActionPagination={() => {}}
+      />
     );
 
     const span = app.container.querySelector('span');
@@ -71,37 +53,41 @@ describe('FEATURE - Paginated Todo List Component', () => {
   });
 
   it('GIVEN next property is "true" AND previous property is "true" THEN must display pagination component with two buttons AND must display notes', () => {
-    const app = render(
-      <ElementWrapper
-        preloadedState={{
-          paginatedNotes: {
-            value: {
-              notes: [
-                NoteBuilder.note()
-                  .withCustomTitle('fake_title_1')
-                  .withCustomDescription('fake_description_1')
-                  .build(),
-                NoteBuilder.note()
-                  .withCustomTitle('fake_title_2')
-                  .withCustomDescription('fake_description_2')
-                  .build(),
-              ],
-              previous: true,
-              next: true,
-            },
-            page: 1,
-            limit: 2,
+    const routes = [
+      {
+        path: '/',
+        element: (
+          <PaginatedTodosList
+            nextActionPagination={() => {}}
+            onChangeItem={() => {}}
+            onDeleteItem={() => {}}
+            previousActionPagination={() => {}}
+          />
+        ),
+      },
+    ];
+    const app = renderWithProviders(<NavigationRenderer routes={routes} />, {
+      preloadedState: {
+        paginatedNotes: {
+          value: {
+            notes: [
+              NoteBuilder.note()
+                .withCustomTitle('fake_title_1')
+                .withCustomDescription('fake_description_1')
+                .build(),
+              NoteBuilder.note()
+                .withCustomTitle('fake_title_2')
+                .withCustomDescription('fake_description_2')
+                .build(),
+            ],
+            previous: true,
+            next: true,
           },
-        }}
-      >
-        <PaginatedTodosList
-          nextActionPagination={() => {}}
-          onChangeItem={() => {}}
-          onDeleteItem={() => {}}
-          previousActionPagination={() => {}}
-        />
-      </ElementWrapper>
-    );
+          page: 1,
+          limit: 2,
+        },
+      },
+    });
 
     const [, , previousSpan, nextSpan] = app.container.querySelectorAll('span');
     const previous = previousSpan.querySelector('button');
@@ -133,39 +119,43 @@ describe('FEATURE - Paginated Todo List Component', () => {
 
   it('GIVEN next property is "true" WHEN user clicks to the next button THEN must trigger action', async () => {
     let counter = 0;
-    const app = render(
-      <ElementWrapper
-        preloadedState={{
-          paginatedNotes: {
-            value: {
-              notes: [
-                NoteBuilder.note()
-                  .withCustomTitle('fake_title_1')
-                  .withCustomDescription('fake_description_1')
-                  .build(),
-                NoteBuilder.note()
-                  .withCustomTitle('fake_title_2')
-                  .withCustomDescription('fake_description_2')
-                  .build(),
-              ],
-              previous: false,
-              next: true,
-            },
-            page: 1,
-            limit: 2,
+    const routes = [
+      {
+        path: '/',
+        element: (
+          <PaginatedTodosList
+            nextActionPagination={(_e: any) => {
+              counter++;
+            }}
+            onChangeItem={() => {}}
+            onDeleteItem={() => {}}
+            previousActionPagination={() => {}}
+          />
+        ),
+      },
+    ];
+    const app = renderWithProviders(<NavigationRenderer routes={routes} />, {
+      preloadedState: {
+        paginatedNotes: {
+          value: {
+            notes: [
+              NoteBuilder.note()
+                .withCustomTitle('fake_title_1')
+                .withCustomDescription('fake_description_1')
+                .build(),
+              NoteBuilder.note()
+                .withCustomTitle('fake_title_2')
+                .withCustomDescription('fake_description_2')
+                .build(),
+            ],
+            previous: false,
+            next: true,
           },
-        }}
-      >
-        <PaginatedTodosList
-          nextActionPagination={(_e: any) => {
-            counter++;
-          }}
-          onChangeItem={() => {}}
-          onDeleteItem={() => {}}
-          previousActionPagination={() => {}}
-        />
-      </ElementWrapper>
-    );
+          page: 1,
+          limit: 2,
+        },
+      },
+    });
     const user = userEvent.setup();
 
     const [, , , nextSpan] = app.container.querySelectorAll('span');
@@ -178,39 +168,43 @@ describe('FEATURE - Paginated Todo List Component', () => {
 
   it('GIVEN previous property is "true" WHEN user clicks to the previous button THEN must trigger action', async () => {
     let counter = 0;
-    const app = render(
-      <ElementWrapper
-        preloadedState={{
-          paginatedNotes: {
-            value: {
-              notes: [
-                NoteBuilder.note()
-                  .withCustomTitle('fake_title_1')
-                  .withCustomDescription('fake_description_1')
-                  .build(),
-                NoteBuilder.note()
-                  .withCustomTitle('fake_title_2')
-                  .withCustomDescription('fake_description_2')
-                  .build(),
-              ],
-              previous: true,
-              next: false,
-            },
-            page: 1,
-            limit: 2,
+    const routes = [
+      {
+        path: '/',
+        element: (
+          <PaginatedTodosList
+            nextActionPagination={() => {}}
+            onChangeItem={() => {}}
+            onDeleteItem={() => {}}
+            previousActionPagination={(_e: any) => {
+              counter++;
+            }}
+          />
+        ),
+      },
+    ];
+    const app = renderWithProviders(<NavigationRenderer routes={routes} />, {
+      preloadedState: {
+        paginatedNotes: {
+          value: {
+            notes: [
+              NoteBuilder.note()
+                .withCustomTitle('fake_title_1')
+                .withCustomDescription('fake_description_1')
+                .build(),
+              NoteBuilder.note()
+                .withCustomTitle('fake_title_2')
+                .withCustomDescription('fake_description_2')
+                .build(),
+            ],
+            previous: true,
+            next: false,
           },
-        }}
-      >
-        <PaginatedTodosList
-          nextActionPagination={() => {}}
-          onChangeItem={() => {}}
-          onDeleteItem={() => {}}
-          previousActionPagination={(_e: any) => {
-            counter++;
-          }}
-        />
-      </ElementWrapper>
-    );
+          page: 1,
+          limit: 2,
+        },
+      },
+    });
     const user = userEvent.setup();
 
     const [, , previousSpan] = app.container.querySelectorAll('span');

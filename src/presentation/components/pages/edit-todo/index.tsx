@@ -1,41 +1,55 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { Note } from '@/domain/models';
-import { CreateNoteUseCase } from '@/domain/use-cases';
-
-import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
-
-import { TodoTemplate } from '@/presentation/components/templates';
-import { RevalidateCacheNotesVisitor } from '@/presentation/visitors';
-
-import { useFetchData, useErrorHandler, useLogout } from '@/presentation/hooks';
+import { UpdateNoteUseCase } from '@/domain/use-cases';
 
 import { Storage } from '@/use-cases/ports/gateways';
 
+import { TodoTemplate } from '@/presentation/components/templates';
+import { RevalidateCacheNotesVisitor } from '@/presentation/visitors';
+import { RootState } from '@/presentation/state-manager/redux-toolkit/store';
+import { useFetchData, useErrorHandler, useLogout } from '@/presentation/hooks';
+
 type Props = {
-  createNoteUseCase: CreateNoteUseCase;
+  updateNoteUseCase: UpdateNoteUseCase;
   storage: Storage;
 };
 
-export const AddTodoPage: React.FC<Props> = ({
-  createNoteUseCase,
+const useQuery = () => {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+};
+
+export const EditTodoPage: React.FC<Props> = ({
   storage,
+  updateNoteUseCase,
 }) => {
-  const { fetch, loading } = useFetchData();
-  const { handleError } = useErrorHandler();
-  const logout = useLogout();
+  const query = useQuery();
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
-  const limit = useSelector((state: RootState) => state.paginatedNotes.limit);
+  const currentTitle = useSelector(
+    (state: RootState) => state.currentNote.value.title
+  );
+  const currentDescription = useSelector(
+    (state: RootState) => state.currentNote.value.description
+  );
 
-  const [title, setTitle] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const noteId = searchParams.get('id');
+  const page = query.get('page');
+  const [title, setTitle] = useState<string>(currentTitle);
+  const [description, setDescription] = useState<string>(currentDescription);
   const [toastText, setToastText] = useState<string>('');
 
   const [showToast, setShowToast] = useState<boolean>(false);
+
+  const { fetch, loading } = useFetchData();
+  const logout = useLogout();
+  const { handleError } = useErrorHandler();
 
   const handleTitleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
@@ -76,9 +90,9 @@ export const AddTodoPage: React.FC<Props> = ({
     event.preventDefault();
 
     const operationSuccess = (note: Note): void => {
-      (createNoteUseCase as any).accept(
+      (updateNoteUseCase as any).accept(
         new RevalidateCacheNotesVisitor({
-          limit,
+          page: Number(page!),
           note,
           storage,
         })
@@ -86,11 +100,11 @@ export const AddTodoPage: React.FC<Props> = ({
     };
 
     const note = await fetch({
-      useCase: createNoteUseCase,
+      useCase: updateNoteUseCase,
       storage,
       operationSuccess,
       operationFailure,
-    })({ title, description });
+    })({ noteId, title, description });
 
     /**
      * Checks if note received is a real note or an error
@@ -103,7 +117,7 @@ export const AddTodoPage: React.FC<Props> = ({
   return (
     <>
       <TodoTemplate
-        editing={false}
+        editing
         titleInputValue={title}
         descriptionTextareaValue={description}
         isLoading={loading}

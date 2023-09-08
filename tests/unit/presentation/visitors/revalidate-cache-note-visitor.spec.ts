@@ -19,12 +19,17 @@ import { LocalStorageMock } from '@/tests/doubles/mocks/infra/gateways';
 describe('FEATURE - Revalidate Cache Note Visitor', () => {
   describe('BACKGROUND - Operation type is correct', () => {
     it('GIVEN visitor is called WHEN type is "update" THEN must execute storage update', () => {
-      const notes = [NoteBuilder.note().build()];
+      const note = NoteBuilder.note().withCustomId('fake_id').build();
+
+      const noteUpdated = NoteBuilder.note()
+        .withCustomId('fake_id')
+        .withFinishedStatus()
+        .build();
 
       const data = {
         [Storage.KEYS.NOTES]: [
           {
-            notes: [notes[0]],
+            notes: [note],
             previous: false,
             next: false,
           },
@@ -32,7 +37,6 @@ describe('FEATURE - Revalidate Cache Note Visitor', () => {
       };
 
       const page = 0;
-      const noteId = notes[0].id;
 
       const useCase = new UpdateFinishedNoteUseCaseDummy();
 
@@ -40,8 +44,7 @@ describe('FEATURE - Revalidate Cache Note Visitor', () => {
 
       const sut = new RevalidateCacheNotesVisitor({
         page,
-        noteId,
-        finished: true,
+        note: noteUpdated,
         storage,
       });
 
@@ -49,7 +52,7 @@ describe('FEATURE - Revalidate Cache Note Visitor', () => {
 
       expect(storage.get(Storage.KEYS.NOTES)).toStrictEqual([
         {
-          notes: [{ ...notes[0], finished: true }],
+          notes: [noteUpdated],
           next: false,
           previous: false,
         },

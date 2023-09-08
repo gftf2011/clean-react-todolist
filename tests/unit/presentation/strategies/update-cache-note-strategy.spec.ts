@@ -19,8 +19,7 @@ describe('FEATURE - Update Cache Note Strategy', () => {
 
       const sut = new UpdateCacheNoteStrategy({
         storage,
-        noteId: note.id,
-        finished: true,
+        note,
         page: 0,
       });
 
@@ -39,8 +38,7 @@ describe('FEATURE - Update Cache Note Strategy', () => {
 
       const sut = new UpdateCacheNoteStrategy({
         storage,
-        noteId: note.id,
-        finished: true,
+        note,
         page: 0,
       });
 
@@ -50,7 +48,10 @@ describe('FEATURE - Update Cache Note Strategy', () => {
     });
 
     it('GIVEN "NOTES" storage has note WHEN note is not found THEN should throw error', () => {
-      const note = [NoteBuilder.note().build(), NoteBuilder.note().build()];
+      const note = [
+        NoteBuilder.note().withCustomId('fake_id').build(),
+        NoteBuilder.note().withCustomId('id').build(),
+      ];
 
       const data = {
         [Storage.KEYS.NOTES]: [
@@ -65,8 +66,7 @@ describe('FEATURE - Update Cache Note Strategy', () => {
 
       const sut = new UpdateCacheNoteStrategy({
         storage,
-        noteId: note[1].id,
-        finished: true,
+        note: note[1],
         page: 0,
       });
 
@@ -78,7 +78,12 @@ describe('FEATURE - Update Cache Note Strategy', () => {
 
   describe('BACKGROUND - Note exists to update', () => {
     it('GIVEN "NOTES" storage has a note WHEN finished status is "false" THEN should update note status to "true"', () => {
-      const note = NoteBuilder.note().build();
+      const note = NoteBuilder.note().withCustomId('fake_id').build();
+
+      const updatedNote = NoteBuilder.note()
+        .withCustomId('fake_id')
+        .withFinishedStatus()
+        .build();
 
       const data = {
         [Storage.KEYS.NOTES]: [
@@ -93,14 +98,11 @@ describe('FEATURE - Update Cache Note Strategy', () => {
 
       const sut = new UpdateCacheNoteStrategy({
         storage,
-        noteId: note.id,
-        finished: true,
+        note: updatedNote,
         page: 0,
       });
 
       sut.invoke();
-
-      const updatedNote = { ...note, finished: true };
 
       expect(storage.get(Storage.KEYS.NOTES)).toStrictEqual([
         { notes: [updatedNote], next: false, previous: false },
@@ -108,7 +110,12 @@ describe('FEATURE - Update Cache Note Strategy', () => {
     });
 
     it('GIVEN "NOTES" storage has a note WHEN finished status is "true" THEN should update note status to "false"', () => {
-      const note = NoteBuilder.note().withFinishedStatus().build();
+      const note = NoteBuilder.note()
+        .withCustomId('fake_id')
+        .withFinishedStatus()
+        .build();
+
+      const updatedNote = NoteBuilder.note().withCustomId('fake_id').build();
 
       const data = {
         [Storage.KEYS.NOTES]: [
@@ -123,14 +130,11 @@ describe('FEATURE - Update Cache Note Strategy', () => {
 
       const sut = new UpdateCacheNoteStrategy({
         storage,
-        noteId: note.id,
-        finished: false,
+        note: updatedNote,
         page: 0,
       });
 
       sut.invoke();
-
-      const updatedNote = { ...note, finished: false };
 
       expect(storage.get(Storage.KEYS.NOTES)).toStrictEqual([
         { notes: [updatedNote], next: false, previous: false },

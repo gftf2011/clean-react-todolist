@@ -78,9 +78,8 @@ export const TodosPage: React.FC<Props> = ({
       (updateFinishedNoteUseCase as any).accept(
         new RevalidateCacheNotesVisitor({
           page: page - 1,
-          noteId: id,
+          note,
           storage,
-          finished: note.finished,
         })
       );
       const notes: any[] = storage.get(Storage.KEYS.NOTES);

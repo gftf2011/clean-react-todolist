@@ -15,6 +15,7 @@ type Props = {
   isLoading: boolean;
   showToast: boolean;
   toastText: string;
+  editing: boolean;
   titleInputOnChange: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void | Promise<void>;
@@ -43,7 +44,7 @@ export const TodoTemplate: React.FC<Props> = (props) => {
               <Toast text={props.toastText} onClick={props.closeToast} />
             )}
             <FormWrapper onSubmit={props.submit}>
-              <h1>Create Task</h1>
+              <h1>{props.editing ? 'Edit Task' : 'Create Task'}</h1>
               <FormControl
                 id="todo-task:title:form-control"
                 inputOnChange={props.titleInputOnChange}
@@ -66,7 +67,7 @@ export const TodoTemplate: React.FC<Props> = (props) => {
               />
               <hr />
               <Button type="submit" className="btn-primary btn-md block">
-                Save
+                {props.editing ? 'Edit' : 'Save'}
               </Button>
             </FormWrapper>
           </MainWrapper>

@@ -6,6 +6,7 @@ import {
   makeSignUp,
   makeAddTodo,
   makeTodos,
+  makeEditTodo,
 } from '@/main/factories/presentation';
 import { ReduxRouterDomProvider } from '@/main/adapters';
 
@@ -29,6 +30,10 @@ const routes = [
   {
     path: '/todos',
     element: makeTodos({}),
+  },
+  {
+    path: '/edit-todo/:id',
+    element: makeEditTodo({}),
   },
 ];
 

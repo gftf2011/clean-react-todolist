@@ -6,9 +6,8 @@ import { Storage } from '@/use-cases/ports/gateways';
 
 export type UpdateCacheNoteDependency = {
   readonly page: number;
-  readonly noteId: string;
+  readonly note: Note;
   readonly storage: Storage;
-  readonly finished: boolean;
 };
 
 export class UpdateCacheNoteStrategy implements Strategy {
@@ -21,7 +20,7 @@ export class UpdateCacheNoteStrategy implements Strategy {
       !notes ||
       notes.length === 0 ||
       !(notes[this.dependencies.page].notes as any[]).find(
-        (note) => note.id === this.dependencies.noteId
+        (note) => note.id === this.dependencies.note.id
       )
     ) {
       throw new Error('note not found');
@@ -30,8 +29,8 @@ export class UpdateCacheNoteStrategy implements Strategy {
     notes[this.dependencies.page].notes = (
       notes[this.dependencies.page].notes as Note[]
     ).map((value) => {
-      if (value.id === this.dependencies.noteId) {
-        value.finished = this.dependencies.finished;
+      if (value.id === this.dependencies.note.id) {
+        value = this.dependencies.note;
       }
       return value;
     });
