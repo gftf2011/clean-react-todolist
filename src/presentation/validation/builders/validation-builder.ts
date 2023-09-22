@@ -17,27 +17,27 @@ export class ValidationBuilder {
     return new ValidationBuilder(fieldName, []);
   }
 
-  required(): ValidationBuilder {
+  required(): this {
     this.validations.push(new RequiredFieldValidation(this.fieldName));
     return this;
   }
 
-  email(): ValidationBuilder {
+  email(): this {
     this.validations.push(new EmailValidation(this.fieldName));
     return this;
   }
 
-  password(): ValidationBuilder {
+  password(): this {
     this.validations.push(new PasswordValidation(this.fieldName));
     return this;
   }
 
-  min(length: number): ValidationBuilder {
+  min(length: number): this {
     this.validations.push(new MinLengthValidation(this.fieldName, length));
     return this;
   }
 
-  max(length: number): ValidationBuilder {
+  max(length: number): this {
     this.validations.push(new MaxLengthValidation(this.fieldName, length));
     return this;
   }

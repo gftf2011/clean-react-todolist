@@ -1,8 +1,5 @@
 import '@testing-library/jest-dom';
 
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
-
 import React from 'react';
 import {
   describe,
@@ -14,7 +11,14 @@ import {
   afterAll,
 } from 'vitest';
 
-import { cleanup, render } from '@testing-library/react';
+import {
+  cleanup,
+  render,
+  within,
+  fireEvent,
+  screen,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import {
   useLocation,
@@ -28,7 +32,7 @@ import { LocalStorage } from '@/infra/gateways/local-storage';
 
 import { makeSignUp } from '@/main/factories/presentation/pages';
 
-import { resizeScreenSize } from '@/tests/utils';
+import { resizeScreenSize, MockServer } from '@/tests/utils';
 
 type Props = {
   children: any;
@@ -58,38 +62,9 @@ const Sut: React.FC<{ routes: any[]; initialEntries: string[] }> = ({
   );
 };
 
-const server = setupServer(
-  rest.post(
-    `${import.meta.env.VITE_BASE_URL}/api/V1/sign-up`,
-    async (req, res, ctx) => {
-      const { name, lastname, email, password } = await req.json();
-
-      if (!name || !lastname || !email || !password) {
-        return res(
-          ctx.status(400),
-          ctx.json({
-            statusCode: 400,
-            body: {
-              name: 'Error',
-              message: 'missing request body element',
-            },
-          })
-        );
-      }
-
-      return res(
-        ctx.status(201),
-        ctx.json({
-          statusCode: 201,
-          body: { accessToken: `access_token` },
-        })
-      );
-    }
-  )
-);
-
 describe('FEATURE - Sign Up Page', () => {
   const storage = LocalStorage.getInstance();
+  const mockServer = new MockServer(import.meta.env.VITE_BASE_URL);
 
   const routes = [
     {
@@ -104,9 +79,27 @@ describe('FEATURE - Sign Up Page', () => {
       path: '/sign-up',
       element: makeSignUp({}),
     },
+    {
+      path: '/sign-in',
+      element: (
+        <ElementWrapper>
+          <></>
+        </ElementWrapper>
+      ),
+    },
+    {
+      path: '/todos',
+      element: (
+        <ElementWrapper>
+          <></>
+        </ElementWrapper>
+      ),
+    },
   ];
 
-  beforeAll(() => server.listen());
+  beforeAll(() => {
+    mockServer.listen();
+  });
 
   describe('SCENARIO - Desktop Screen', () => {
     beforeEach(() => {
@@ -121,18 +114,208 @@ describe('FEATURE - Sign Up Page', () => {
       expect(form).toBeInTheDocument();
     });
 
-    it('...', () => {
-      // const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
-      // const form = app.container.querySelector('form')!;
-      // expect(form).toBeInTheDocument();
+    it('GIVEN user is in sign-up page WHEN click in home header button THEN must render home page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const signInLink = app.container
+        .querySelector('#header-desktop-navigation')!
+        .querySelector('ul')!
+        .querySelectorAll('li')![0]
+        .querySelector('a')!;
+
+      await user.click(signInLink);
+
+      const { getByText } = within(screen.getByTestId('location-display'));
+
+      expect(getByText('/', { exact: true })).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in sign-up page WHEN click in sign-in header button THEN must render sign-in page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const signInLink = app.container
+        .querySelector('#header-desktop-navigation')!
+        .querySelector('ul')!
+        .querySelectorAll('li')![1]
+        .querySelector('a')!;
+
+      await user.click(signInLink);
+
+      const { getByText } = within(screen.getByTestId('location-display'));
+
+      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show inputs error messages', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const submitButton = app.container
+        .querySelector('form')!
+        .querySelector('button')!;
+
+      await user.click(submitButton);
+
+      const inputMessageErrors = app.container
+        .querySelector('form')!
+        .querySelectorAll('span')!;
+
+      const { getByText: getNameErrorMessage } = within(inputMessageErrors[0]);
+      const { getByText: getLastameErrorMessage } = within(
+        inputMessageErrors[1]
+      );
+      const { getByText: getEmailErrorMessage } = within(inputMessageErrors[2]);
+      const { getByText: getPasswordErrorMessage } = within(
+        inputMessageErrors[3]
+      );
+
+      expect(
+        getNameErrorMessage('required field', { exact: true })
+      ).toBeInTheDocument();
+      expect(
+        getLastameErrorMessage('required field', { exact: true })
+      ).toBeInTheDocument();
+      expect(
+        getEmailErrorMessage('required field', { exact: true })
+      ).toBeInTheDocument();
+      expect(
+        getPasswordErrorMessage('required field', { exact: true })
+      ).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show toast error', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const submitButton = app.container
+        .querySelector('form')!
+        .querySelector('button')!;
+
+      await user.click(submitButton);
+
+      const toastMessage = app.container
+        .querySelector('main > div')!
+        .querySelector('div')!
+        .querySelector('p')!;
+
+      const { getByText } = within(toastMessage);
+
+      expect(
+        getByText('credentials are not valid', { exact: true })
+      ).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show toast error AND close toast', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const submitButton = app.container
+        .querySelector('form')!
+        .querySelector('button')!;
+
+      await user.click(submitButton);
+
+      const toastCloseButton = app.container
+        .querySelector('main > div')!
+        .querySelector('button')!;
+
+      await user.click(toastCloseButton);
+
+      const toast = screen.queryByText('credentials are not valid');
+
+      expect(toast).not.toBeInTheDocument();
+    });
+
+    it('GIVEN user is in sign-up page WHEN presses the submit button AND all fields were filled THEN must redirect to "/todos" page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const inputs = app.container
+        .querySelector('main')!
+        .querySelectorAll('input')!;
+
+      fireEvent.change(inputs[0], { target: { value: 'Test' } });
+      fireEvent.change(inputs[1], { target: { value: 'Test' } });
+      fireEvent.change(inputs[2], { target: { value: 'test@mail.com' } });
+      fireEvent.change(inputs[3], { target: { value: '12345678aA@' } });
+
+      const submitButton = app.container
+        .querySelector('form')!
+        .querySelector('button')!;
+
+      await user.click(submitButton);
+
+      const { getByText } = within(screen.getByTestId('location-display'));
+
+      expect(getByText('/todos', { exact: true })).toBeInTheDocument();
     });
 
     afterEach(() => {
-      server.resetHandlers();
+      mockServer.resetHandlers();
       storage.clear();
       cleanup();
     });
   });
 
-  afterAll(() => server.close());
+  describe('SCENARIO - Mobile Screen', () => {
+    beforeEach(() => {
+      resizeScreenSize(1200);
+    });
+
+    it('GIVEN user is in sign-up page WHEN click in home header button THEN must render home page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const dropdownButton = app.container.querySelector(
+        '.header-mobile-dropdown-button'
+      )!;
+
+      await user.click(dropdownButton);
+
+      const signInLink = app.container
+        .querySelector('#header-mobile-navigation')!
+        .querySelector('ul')!
+        .querySelectorAll('li')![0]
+        .querySelector('a')!;
+
+      await user.click(signInLink);
+
+      const { getByText } = within(screen.getByTestId('location-display'));
+
+      expect(getByText('/', { exact: true })).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in sign-up page WHEN click in sign-in header button THEN must render sign-in page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const user = userEvent.setup();
+
+      const dropdownButton = app.container.querySelector(
+        '.header-mobile-dropdown-button'
+      )!;
+
+      await user.click(dropdownButton);
+
+      const signInLink = app.container
+        .querySelector('#header-mobile-navigation')!
+        .querySelector('ul')!
+        .querySelectorAll('li')![1]
+        .querySelector('a')!;
+
+      await user.click(signInLink);
+
+      const { getByText } = within(screen.getByTestId('location-display'));
+
+      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
+    });
+
+    afterEach(() => {
+      mockServer.resetHandlers();
+      storage.clear();
+      cleanup();
+    });
+  });
+
+  afterAll(() => mockServer.close());
 });

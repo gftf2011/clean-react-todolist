@@ -1,5 +1,6 @@
 import { rest } from 'msw';
 import { setupServer, SetupServer } from 'msw/node';
+import { v4 } from 'uuid';
 
 type Database = {
   users: any[];
@@ -51,11 +52,14 @@ export class MockServer {
           );
         }
 
+        const id = v4();
+        this.database.users.push({ name, lastname, email, password, id });
+
         return res(
           ctx.status(201),
           ctx.json({
             statusCode: 201,
-            body: { accessToken: `access_token` },
+            body: { accessToken: `access_token-id:${id}` },
           })
         );
       })
@@ -82,10 +86,7 @@ export class MockServer {
   }
 
   public eraseDatabase(): void {
-    this.database = {
-      users: [],
-      notes: [],
-    };
+    this.initDatabase();
   }
 
   public listen(): void {
