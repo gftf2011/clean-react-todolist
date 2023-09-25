@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { HttpStatusCode } from '@/use-cases/ports/gateways';
-import { SignInUseCaseImpl } from '@/use-cases';
+import { FindNotesUseCaseImpl } from '@/use-cases';
 import {
-  EmailDoesNotExistsError,
-  InvalidCredentialsError,
-  PasswordDoesNotMatchError,
+  InvalidTokenError,
   ServerError,
   ServiceUnavailableError,
   UnknownError,
@@ -13,69 +11,47 @@ import {
 
 import { HttpClientStubFactory } from '@/tests/doubles/stubs/infra/gateways';
 
-describe('FEATURE - Sign In Use Case', () => {
+describe('FEATURE - Find Notes Use Case', () => {
   it('GIVEN api is called correctly THEN must return access token', async () => {
     const output = {
-      accessToken: '',
+      paginatedNotes: {
+        next: true,
+        previous: false,
+        notes: [],
+      },
     };
-    const input = { email: '', password: '' };
+    const input = { accessToken: '', limit: 0, page: 0 };
 
     const url = 'url';
     const httpClient = HttpClientStubFactory.make(HttpStatusCode.ok, output);
 
-    const sut = new SignInUseCaseImpl(url, httpClient);
+    const sut = new FindNotesUseCaseImpl(url, httpClient);
 
     const response = await sut.execute(input);
 
     expect(response).toBe(output);
   });
 
-  it('GIVEN api is called incorrectly THEN must return invalid credentials error', async () => {
-    const input = { email: '', password: '' };
-
-    const url = 'url';
-    const httpClient = HttpClientStubFactory.make(HttpStatusCode.badRequest);
-
-    const sut = new SignInUseCaseImpl(url, httpClient);
-
-    const promise = sut.execute(input);
-
-    await expect(promise).rejects.toThrow(new InvalidCredentialsError());
-  });
-
   it('GIVEN api is called incorrectly THEN must return email does not exists error', async () => {
-    const input = { email: '', password: '' };
+    const input = { accessToken: '', limit: 0, page: 0 };
 
     const url = 'url';
     const httpClient = HttpClientStubFactory.make(HttpStatusCode.unauthorized);
 
-    const sut = new SignInUseCaseImpl(url, httpClient);
+    const sut = new FindNotesUseCaseImpl(url, httpClient);
 
     const promise = sut.execute(input);
 
-    await expect(promise).rejects.toThrow(new EmailDoesNotExistsError());
-  });
-
-  it('GIVEN api is called incorrectly THEN must return password does not match error', async () => {
-    const input = { email: '', password: '' };
-
-    const url = 'url';
-    const httpClient = HttpClientStubFactory.make(HttpStatusCode.forbidden);
-
-    const sut = new SignInUseCaseImpl(url, httpClient);
-
-    const promise = sut.execute(input);
-
-    await expect(promise).rejects.toThrow(new PasswordDoesNotMatchError());
+    await expect(promise).rejects.toThrow(new InvalidTokenError());
   });
 
   it('GIVEN api is called incorrectly THEN must return server error', async () => {
-    const input = { email: '', password: '' };
+    const input = { accessToken: '', limit: 0, page: 0 };
 
     const url = 'url';
     const httpClient = HttpClientStubFactory.make(HttpStatusCode.serverError);
 
-    const sut = new SignInUseCaseImpl(url, httpClient);
+    const sut = new FindNotesUseCaseImpl(url, httpClient);
 
     const promise = sut.execute(input);
 
@@ -83,14 +59,14 @@ describe('FEATURE - Sign In Use Case', () => {
   });
 
   it('GIVEN api is called incorrectly THEN must return service unavailable error', async () => {
-    const input = { email: '', password: '' };
+    const input = { accessToken: '', limit: 0, page: 0 };
 
     const url = 'url';
     const httpClient = HttpClientStubFactory.make(
       HttpStatusCode.serviceUnavailable
     );
 
-    const sut = new SignInUseCaseImpl(url, httpClient);
+    const sut = new FindNotesUseCaseImpl(url, httpClient);
 
     const promise = sut.execute(input);
 
@@ -98,12 +74,12 @@ describe('FEATURE - Sign In Use Case', () => {
   });
 
   it('GIVEN api is called incorrectly THEN must return unknown error', async () => {
-    const input = { email: '', password: '' };
+    const input = { accessToken: '', limit: 0, page: 0 };
 
     const url = 'url';
     const httpClient = HttpClientStubFactory.make(HttpStatusCode.unknown);
 
-    const sut = new SignInUseCaseImpl(url, httpClient);
+    const sut = new FindNotesUseCaseImpl(url, httpClient);
 
     const promise = sut.execute(input);
 
