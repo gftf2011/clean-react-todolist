@@ -13,13 +13,7 @@ export default defineConfig({
       '**/tests/**/*.spec.tsx',
       '**/tests/**/*.test.tsx',
     ],
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      './src/main/**',
-      './src/presentation/assets/**',
-      './src/presentation/styles/**',
-    ],
+    exclude: ['**/node_modules/**', '**/dist/**'],
     testTimeout: 15000,
     watch: false,
     coverage: {
@@ -27,6 +21,15 @@ export default defineConfig({
       include: ['src'],
       provider: 'v8',
       reporter: ['clover', 'cobertura', 'lcov', 'text'],
+      exclude: [
+        'src/custom.d.ts',
+        'src/vite-env.d.ts',
+        'src/main/**',
+        'src/domain/models/**/*.ts',
+        'src/domain/use-cases/**/*.ts',
+        'src/presentation/assets/**',
+        'src/presentation/styles/**',
+      ],
     },
   },
 });
