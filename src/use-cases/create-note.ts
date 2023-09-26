@@ -20,7 +20,6 @@ export class CreateNoteUseCaseImpl implements CreateNoteUseCase {
   public async execute(
     input: CreateNoteUseCase.Input
   ): Promise<CreateNoteUseCase.Output> {
-    // Should return the new note
     const response = await this.httpClient.request({
       url: `${this.url}/api/V1/create-note`,
       method: 'post',
