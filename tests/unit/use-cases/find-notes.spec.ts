@@ -12,7 +12,7 @@ import {
 import { HttpClientStubFactory } from '@/tests/doubles/stubs/infra/gateways';
 
 describe('FEATURE - Find Notes Use Case', () => {
-  it('GIVEN api is called correctly THEN must return access token', async () => {
+  it('GIVEN api is called correctly THEN must return paginated notes', async () => {
     const output = {
       paginatedNotes: {
         next: true,
