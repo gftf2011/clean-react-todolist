@@ -28,8 +28,9 @@ import {
 
 import { LocalStorage } from '@/infra/gateways/local-storage';
 
-import { makeSignUp } from '@/main/factories/presentation/pages';
+import { makeSignIn } from '@/main/factories/presentation/pages';
 
+import { UserBuilder } from '@/tests/builders';
 import { resizeScreenSize, MockServer } from '@/tests/utils';
 
 type Props = {
@@ -74,11 +75,11 @@ describe('FEATURE - Sign Up Page', () => {
       ),
     },
     {
-      path: '/sign-up',
-      element: makeSignUp({}),
+      path: '/sign-in',
+      element: makeSignIn({}),
     },
     {
-      path: '/sign-in',
+      path: '/sign-up',
       element: (
         <ElementWrapper>
           <></>
@@ -104,16 +105,16 @@ describe('FEATURE - Sign Up Page', () => {
       resizeScreenSize(1200);
     });
 
-    it('GIVEN user is in sign-up page WHEN there is no cached session THEN must show form', () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN there is no cached session THEN must show form', () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
 
       const form = app.container.querySelector('form')!;
 
       expect(form).toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN click in home header button THEN must render home page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN click in home header button THEN must render home page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
       const homeLink = app.container
@@ -129,25 +130,25 @@ describe('FEATURE - Sign Up Page', () => {
       expect(getByText('/', { exact: true })).toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN click in sign-in header button THEN must render sign-in page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN click in sign-up header button THEN must render sign-up page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
-      const signInLink = app.container
+      const signUpLink = app.container
         .querySelector('#header-desktop-navigation')!
         .querySelector('ul')!
-        .querySelectorAll('li')![1]
+        .querySelectorAll('li')![2]
         .querySelector('a')!;
 
-      await user.click(signInLink);
+      await user.click(signUpLink);
 
       const { getByText } = within(screen.getByTestId('location-display'));
 
-      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
+      expect(getByText('/sign-up', { exact: true })).toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show inputs error messages', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN presses the submit button AND no field was filled THEN must show inputs error messages', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
       const submitButton = app.container
@@ -160,21 +161,11 @@ describe('FEATURE - Sign Up Page', () => {
         .querySelector('form')!
         .querySelectorAll('span')!;
 
-      const { getByText: getNameErrorMessage } = within(inputMessageErrors[0]);
-      const { getByText: getLastameErrorMessage } = within(
+      const { getByText: getEmailErrorMessage } = within(inputMessageErrors[0]);
+      const { getByText: getPasswordErrorMessage } = within(
         inputMessageErrors[1]
       );
-      const { getByText: getEmailErrorMessage } = within(inputMessageErrors[2]);
-      const { getByText: getPasswordErrorMessage } = within(
-        inputMessageErrors[3]
-      );
 
-      expect(
-        getNameErrorMessage('required field', { exact: true })
-      ).toBeInTheDocument();
-      expect(
-        getLastameErrorMessage('required field', { exact: true })
-      ).toBeInTheDocument();
       expect(
         getEmailErrorMessage('required field', { exact: true })
       ).toBeInTheDocument();
@@ -183,8 +174,8 @@ describe('FEATURE - Sign Up Page', () => {
       ).toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show toast error', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN presses the submit button AND no field was filled AND no user exists in database THEN must show toast error', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
       const submitButton = app.container
@@ -205,8 +196,8 @@ describe('FEATURE - Sign Up Page', () => {
       ).toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show toast error AND close toast', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN presses the submit button AND no field was filled THEN must show toast error AND close toast', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
       const submitButton = app.container
@@ -226,24 +217,29 @@ describe('FEATURE - Sign Up Page', () => {
       expect(toast).not.toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN presses the submit button AND all fields were filled THEN must redirect to "/todos" page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
-      const user = userEvent.setup();
+    it('GIVEN user is in sign-in page WHEN presses the submit button AND all fields were filled THEN must redirect to "/todos" page', async () => {
+      const user = UserBuilder.user()
+        .withCustomEmail('test@mail.com')
+        .withCustomPassword('12345678aA@')
+        .build();
+
+      mockServer.addUserToCollection(user);
+
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
+      const userSimulator = userEvent.setup();
 
       const inputs = app.container
         .querySelector('main')!
         .querySelectorAll('input')!;
 
-      fireEvent.change(inputs[0], { target: { value: 'Test' } });
-      fireEvent.change(inputs[1], { target: { value: 'Test' } });
-      fireEvent.change(inputs[2], { target: { value: 'test@mail.com' } });
-      fireEvent.change(inputs[3], { target: { value: '12345678aA@' } });
+      fireEvent.change(inputs[0], { target: { value: user.email } });
+      fireEvent.change(inputs[1], { target: { value: user.password } });
 
       const submitButton = app.container
         .querySelector('form')!
         .querySelector('button')!;
 
-      await user.click(submitButton);
+      await userSimulator.click(submitButton);
 
       const { getByText } = within(screen.getByTestId('location-display'));
 
@@ -262,8 +258,8 @@ describe('FEATURE - Sign Up Page', () => {
       resizeScreenSize(768);
     });
 
-    it('GIVEN user is in sign-up page WHEN click in home header button THEN must render home page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN click in home header button THEN must render home page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
       const dropdownButton = app.container.querySelector(
@@ -285,8 +281,8 @@ describe('FEATURE - Sign Up Page', () => {
       expect(getByText('/', { exact: true })).toBeInTheDocument();
     });
 
-    it('GIVEN user is in sign-up page WHEN click in sign-in header button THEN must render sign-in page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-in page WHEN click in sign-up header button THEN must render sign-up page', async () => {
+      const app = render(<Sut routes={routes} initialEntries={['/sign-in']} />);
       const user = userEvent.setup();
 
       const dropdownButton = app.container.querySelector(
@@ -295,17 +291,17 @@ describe('FEATURE - Sign Up Page', () => {
 
       await user.click(dropdownButton);
 
-      const signInLink = app.container
+      const signUpLink = app.container
         .querySelector('#header-mobile-navigation')!
         .querySelector('ul')!
-        .querySelectorAll('li')![1]
+        .querySelectorAll('li')![2]
         .querySelector('a')!;
 
-      await user.click(signInLink);
+      await user.click(signUpLink);
 
       const { getByText } = within(screen.getByTestId('location-display'));
 
-      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
+      expect(getByText('/sign-up', { exact: true })).toBeInTheDocument();
     });
 
     afterEach(() => {
