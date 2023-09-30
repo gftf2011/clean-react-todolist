@@ -17,6 +17,7 @@ import {
   within,
   fireEvent,
   screen,
+  act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -104,8 +105,10 @@ describe('FEATURE - Sign Up Page', () => {
       resizeScreenSize(1200);
     });
 
-    it('GIVEN user is in sign-up page WHEN there is no cached session THEN must show form', () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+    it('GIVEN user is in sign-up page WHEN there is no cached session THEN must show form', async () => {
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
 
       const form = app.container.querySelector('form')!;
 
@@ -113,7 +116,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN click in home header button THEN must render home page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const homeLink = app.container
@@ -130,7 +135,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN click in sign-in header button THEN must render sign-in page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const signInLink = app.container
@@ -147,7 +154,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show inputs error messages', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const submitButton = app.container
@@ -184,7 +193,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show toast error', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const submitButton = app.container
@@ -206,7 +217,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN presses the submit button AND no field was filled THEN must show toast error AND close toast', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const submitButton = app.container
@@ -227,7 +240,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN presses the submit button AND all fields were filled THEN must redirect to "/todos" page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const inputs = app.container
@@ -263,7 +278,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN click in home header button THEN must render home page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const dropdownButton = app.container.querySelector(
@@ -286,7 +303,9 @@ describe('FEATURE - Sign Up Page', () => {
     });
 
     it('GIVEN user is in sign-up page WHEN click in sign-in header button THEN must render sign-in page', async () => {
-      const app = render(<Sut routes={routes} initialEntries={['/sign-up']} />);
+      const app = await act(async () =>
+        render(<Sut routes={routes} initialEntries={['/sign-up']} />)
+      );
       const user = userEvent.setup();
 
       const dropdownButton = app.container.querySelector(

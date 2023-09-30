@@ -22,6 +22,7 @@ export const Pagination: React.FC<Props> = (props) => {
           <span>
             {props.hasPrevious && (
               <Button
+                data-testid="previous-notes-pagination-button"
                 onClick={props.previousAction}
                 className="btn-primary block"
               >
@@ -31,7 +32,11 @@ export const Pagination: React.FC<Props> = (props) => {
           </span>
           <span>
             {props.hasNext && (
-              <Button onClick={props.nextAction} className="btn-primary block">
+              <Button
+                data-testid="next-notes-pagination-button"
+                onClick={props.nextAction}
+                className="btn-primary block"
+              >
                 <Icon.RightArrow />
               </Button>
             )}

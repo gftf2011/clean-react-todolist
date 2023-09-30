@@ -168,7 +168,7 @@ export class MockServer {
             body: {
               paginatedNotes: {
                 notes,
-                previous: page > 1,
+                previous: page > 0,
                 next: nextNotes && nextNotes.length > 0,
               },
             },
@@ -279,6 +279,20 @@ export class MockServer {
       updatedAt: note.timestamp,
       createdAt: note.timestamp,
       userId,
+    });
+  }
+
+  public addNotesToCollection(notes: Note[], userId: string): void {
+    notes.forEach((note) => {
+      this.database.notes.push({
+        id: note.id,
+        finished: note.finished,
+        title: note.title,
+        description: note.description,
+        updatedAt: note.timestamp,
+        createdAt: note.timestamp,
+        userId,
+      });
     });
   }
 

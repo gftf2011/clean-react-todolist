@@ -55,7 +55,7 @@ server.get('/api/V1/find-notes', (req, _res, next) => {
     body: {
       paginatedNotes: {
         notes,
-        previous: page > 1,
+        previous: page > 0,
         next: (nextNotes && nextNotes.length > 0),
       },
     },

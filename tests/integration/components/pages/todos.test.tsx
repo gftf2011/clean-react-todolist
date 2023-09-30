@@ -11,7 +11,7 @@ import {
   expect,
 } from 'vitest';
 
-import { cleanup, screen, within } from '@testing-library/react';
+import { cleanup, screen, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import {
@@ -37,13 +37,13 @@ type Props = {
   children: any;
 };
 
-const sleep = (timeout: number): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, timeout);
-  });
-};
+// const sleep = (timeout: number): Promise<void> => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve();
+//     }, timeout);
+//   });
+// };
 
 const ElementWrapper: React.FC<Props> = ({ children }) => {
   const location = useLocation();
@@ -129,7 +129,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const noNotesTitle = await screen.findByText(
         'You have no tasks created, yet !'
@@ -149,7 +151,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const todoCard = await screen.findByTestId(`${note.id}-todo-card-wrap`);
 
@@ -167,7 +171,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const todoCard = await screen.findByTestId(`${note.id}-todo-card-wrap`);
 
@@ -187,7 +193,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const todoCard = await screen.findByTestId(`${note.id}-todo-card-wrap`);
 
@@ -196,6 +204,187 @@ describe('FEATURE - Todos Page', () => {
       await userSimulator.click(checkbox);
 
       expect((checkbox as any).checked).toBeTruthy();
+    });
+
+    it('GIVEN user is in todos page AND session is active AND it has notes WHEN page loads THEN must display all notes AND no next button', async () => {
+      const user = UserBuilder.user().build();
+      const notes = [
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+      ];
+
+      mockServer.addUserToCollection(user);
+      mockServer.addNotesToCollection(notes, user.id);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:${user.id}`,
+      });
+
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
+
+      const previousButton = () =>
+        app.getByTestId('previous-notes-pagination-button');
+      const nextButton = () => app.getByTestId('next-notes-pagination-button');
+      const listItems = app.container
+        .querySelector('main')!
+        .querySelector('ul')!
+        .querySelectorAll('li')!;
+
+      expect(listItems.length).toBe(10);
+      expect(previousButton).toThrow();
+      expect(nextButton).toThrow();
+    });
+
+    it('GIVEN user is in todos page AND session is active AND it has notes WHEN page loads THEN must display all notes AND next button', async () => {
+      const user = UserBuilder.user().build();
+      const notes = [
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+      ];
+
+      mockServer.addUserToCollection(user);
+      mockServer.addNotesToCollection(notes, user.id);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:${user.id}`,
+      });
+
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
+
+      const previousButton = () =>
+        app.getByTestId('previous-notes-pagination-button');
+      const nextButton = app.getByTestId('next-notes-pagination-button');
+      const listItems = app.container
+        .querySelector('main')!
+        .querySelector('ul')!
+        .querySelectorAll('li')!;
+
+      expect(listItems.length).toBe(10);
+      expect(previousButton).toThrow();
+      expect(nextButton).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in todos page AND session is active AND it has notes WHEN page loads AND user click in next button THEN must display all notes', async () => {
+      const userSimulator = userEvent.setup();
+
+      const user = UserBuilder.user().build();
+      const notes = [
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+      ];
+
+      mockServer.addUserToCollection(user);
+      mockServer.addNotesToCollection(notes, user.id);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:${user.id}`,
+      });
+
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
+
+      let nextButton: any = app.getByTestId('next-notes-pagination-button')!;
+
+      await act(async () => userSimulator.click(nextButton));
+
+      const listItems = app.container
+        .querySelector('main')!
+        .querySelector('ul')!
+        .querySelectorAll('li')!;
+
+      nextButton = () => app.getByTestId('next-notes-pagination-button');
+
+      const previousButton = await screen.findByTestId(
+        'previous-notes-pagination-button'
+      )!;
+
+      expect(listItems.length).toBe(1);
+      expect(previousButton).toBeInTheDocument();
+      expect(nextButton).toThrow();
+    });
+
+    it('GIVEN user is in todos page AND session is active AND it has notes WHEN page loads AND user click in next button AND clicks in previous button THEN must display all notes', async () => {
+      const userSimulator = userEvent.setup();
+
+      const user = UserBuilder.user().build();
+      const notes = [
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+        NoteBuilder.note().build(),
+      ];
+
+      mockServer.addUserToCollection(user);
+      mockServer.addNotesToCollection(notes, user.id);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:${user.id}`,
+      });
+
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
+
+      let nextButton: any = app.getByTestId('next-notes-pagination-button')!;
+
+      await act(async () => userSimulator.click(nextButton));
+
+      let previousButton: any = await screen.findByTestId(
+        'previous-notes-pagination-button'
+      )!;
+
+      await act(async () => userSimulator.click(previousButton));
+
+      const listItems = app.container
+        .querySelector('main')!
+        .querySelector('ul')!
+        .querySelectorAll('li')!;
+
+      nextButton = await screen.findByTestId('next-notes-pagination-button');
+      previousButton = () =>
+        screen.getByTestId('previous-notes-pagination-button');
+
+      expect(listItems.length).toBe(10);
+      expect(previousButton).toThrow();
+      expect(nextButton).toBeInTheDocument();
     });
 
     it('GIVEN user is in todos page AND session is active AND it has notes WHEN user clicks in checkbox AND clicks in delete button THEN must delete note', async () => {
@@ -211,7 +400,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const todoCard = await screen.findByTestId(`${note.id}-todo-card-wrap`);
 
@@ -244,7 +435,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const editTodoPageLink = (await screen.findByTestId(
         `${note.id}-todo-card-wrap`
@@ -276,7 +469,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const createNoteLink = (await screen.findByTestId(`add-todo-link`))!;
 
@@ -298,14 +493,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      const app = renderWithProviders(
-        <Sut routes={routes} initialEntries={['/todos']} />
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
       );
-
-      /**
-       *  Must wait for loading component to render the page
-       * */
-      await sleep(200);
 
       const logoutButton = app.container
         .querySelector('header')!
@@ -327,20 +517,19 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:fake_id`,
       });
 
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
-
-      /**
-       *  Must wait for loading component to render the page
-       * */
-      await sleep(200);
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const { getByText } = within(screen.getByTestId('location-display'));
 
       expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
     });
 
-    it('GIVEN user is in todos page WHEN there is no cached session THEN must redirect to "/sign-in" page', () => {
-      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+    it('GIVEN user is in todos page WHEN there is no cached session THEN must redirect to "/sign-in" page', async () => {
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
 
       const { getByText } = within(screen.getByTestId('location-display'));
 
@@ -370,14 +559,9 @@ describe('FEATURE - Todos Page', () => {
         accessToken: `access_token-id:${user.id}`,
       });
 
-      const app = renderWithProviders(
-        <Sut routes={routes} initialEntries={['/todos']} />
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
       );
-
-      /**
-       *  Must wait for loading component to render the page
-       * */
-      await sleep(200);
 
       const dropdownButton = app.container
         .querySelector('header')!
