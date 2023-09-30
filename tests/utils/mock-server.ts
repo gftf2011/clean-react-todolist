@@ -124,6 +124,19 @@ export class MockServer {
 
         const userId = auth.replace('access_token-id:', '');
 
+        if (userId === 'server-error') {
+          return res(
+            ctx.status(500),
+            ctx.json({
+              statusCode: 500,
+              body: {
+                name: 'Error',
+                message: 'server error',
+              },
+            })
+          );
+        }
+
         if (!this.database.users.find((user) => user.id === userId)) {
           return res(
             ctx.status(401),

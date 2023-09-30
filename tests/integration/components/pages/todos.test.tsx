@@ -387,6 +387,58 @@ describe('FEATURE - Todos Page', () => {
       expect(nextButton).toBeInTheDocument();
     });
 
+    it('GIVEN user is in todos page AND session is active WHEN server returns generic error THEN must display error modal', async () => {
+      const user = UserBuilder.user().withCustomId('server-error').build();
+
+      mockServer.addUserToCollection(user);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:${user.id}`,
+      });
+
+      await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
+
+      const errorModal = await screen.findByText(
+        'server is not responding right now'
+      )!;
+
+      const noNotesTitle = await screen.findByText(
+        'You have no tasks created, yet !'
+      );
+
+      expect(noNotesTitle).toBeInTheDocument();
+      expect(errorModal).toBeInTheDocument();
+    });
+
+    it('GIVEN user is in todos page AND session is active WHEN server returns generic error THEN must display error modal AND close it', async () => {
+      const userSimulator = userEvent.setup();
+
+      const user = UserBuilder.user().withCustomId('server-error').build();
+
+      mockServer.addUserToCollection(user);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:${user.id}`,
+      });
+
+      const app = await act(async () =>
+        renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />)
+      );
+
+      const toastCloseButton = app.container
+        .querySelector('main > div')!
+        .querySelector('button')!;
+
+      await userSimulator.click(toastCloseButton);
+
+      const errorModal = async () =>
+        screen.findByText('server is not responding right now')!;
+
+      await expect(errorModal).rejects.toThrow();
+    });
+
     it('GIVEN user is in todos page AND session is active AND it has notes WHEN user clicks in checkbox AND clicks in delete button THEN must delete note', async () => {
       const userSimulator = userEvent.setup();
 
