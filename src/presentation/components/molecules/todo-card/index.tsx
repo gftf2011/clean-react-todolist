@@ -55,7 +55,7 @@ export const TodoCard: React.FC<Props> = (props) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper data-testid={`${props.todo.id}-todo-card-wrap`}>
       <CheckboxWrapper>
         <Input
           className="xxs"

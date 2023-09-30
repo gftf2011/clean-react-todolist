@@ -19,13 +19,9 @@ export class FindNotesCacheUseCaseProxy implements FindNotesUseCase {
   public async execute(
     input: FindNotesUseCase.Input
   ): Promise<FindNotesUseCase.Output> {
-    const notesCache: NoteCache[] = this.storage.get(Storage.KEYS.NOTES);
+    const notesCache: NoteCache[] = this.storage.get(Storage.KEYS.NOTES) || [];
 
-    if (
-      !notesCache ||
-      !notesCache[input.page] ||
-      notesCache[input.page].notes.length === 0
-    ) {
+    if (!notesCache[input.page] || notesCache[input.page].notes.length === 0) {
       const response = await this.interator.execute(input);
 
       notesCache[input.page] = response.paginatedNotes;

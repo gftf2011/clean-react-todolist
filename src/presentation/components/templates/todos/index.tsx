@@ -48,7 +48,11 @@ export const TodosTemplate: React.FC<Props> = (props) => {
                 onDeleteItem={props.onDeleteItem}
               />
               <hr />
-              <Link to="/add-todo" className="block btn-primary">
+              <Link
+                data-testid="add-todo-link"
+                to="/add-todo"
+                className="block btn-primary"
+              >
                 Create Task
               </Link>
             </section>

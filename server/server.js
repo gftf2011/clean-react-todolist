@@ -34,7 +34,7 @@ server.get('/api/V1/find-notes', (req, _res, next) => {
   }
 
   const filteredNotes = database.notes.filter((note) => note.userId === req.headers.userId);
-  const notes = filteredNotes.slice((page - 1) * limit, page * limit).map(note => ({
+  const notes = filteredNotes.slice(page * limit, (page + 1) * limit).map(note => ({
     id: note.id,
     title: note.title,
     description: note.description,
@@ -42,7 +42,7 @@ server.get('/api/V1/find-notes', (req, _res, next) => {
     timestamp: note.updatedAt,
   }));
 
-  const nextNotes = filteredNotes.slice(page * limit, (page + 1) * limit).map(note => ({
+  const nextNotes = filteredNotes.slice((page + 1) * limit, (page + 2) * limit).map(note => ({
     id: note.id,
     title: note.title,
     description: note.description,

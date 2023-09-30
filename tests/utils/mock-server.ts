@@ -2,7 +2,7 @@ import { rest } from 'msw';
 import { setupServer, SetupServer } from 'msw/node';
 import { v4 } from 'uuid';
 
-import { User } from '@/domain/models';
+import { User, Note } from '@/domain/models';
 
 type Database = {
   users: any[];
@@ -115,7 +115,149 @@ export class MockServer {
             body: { accessToken: `access_token-id:${user.id}` },
           })
         );
-      })
+      }),
+      rest.get(`${this.baseUrl}/api/V1/find-notes`, async (req, res, ctx) => {
+        const auth = req.headers.get('Authorization')!;
+
+        const page = Number(req.headers.get('page'));
+        const limit = Number(req.headers.get('limit'));
+
+        const userId = auth.replace('access_token-id:', '');
+
+        if (!this.database.users.find((user) => user.id === userId)) {
+          return res(
+            ctx.status(401),
+            ctx.json({
+              statusCode: 401,
+              body: {
+                name: 'Error',
+                message: 'user does not exists',
+              },
+            })
+          );
+        }
+
+        const filteredNotes = this.database.notes.filter(
+          (note) => note.userId === userId
+        );
+
+        const notes = filteredNotes
+          .slice(page * limit, (page + 1) * limit)
+          .map((note) => ({
+            id: note.id,
+            title: note.title,
+            description: note.description,
+            finished: note.finished,
+            timestamp: note.updatedAt,
+          }));
+
+        const nextNotes = filteredNotes
+          .slice((page + 1) * limit, (page + 2) * limit)
+          .map((note) => ({
+            id: note.id,
+            title: note.title,
+            description: note.description,
+            finished: note.finished,
+            timestamp: note.updatedAt,
+          }));
+
+        return res(
+          ctx.status(200),
+          ctx.json({
+            statusCode: 200,
+            body: {
+              paginatedNotes: {
+                notes,
+                previous: page > 1,
+                next: nextNotes && nextNotes.length > 0,
+              },
+            },
+          })
+        );
+      }),
+      rest.patch(
+        `${this.baseUrl}/api/V1/update-finished-note`,
+        async (req, res, ctx) => {
+          const { id, finished } = await req.json();
+
+          const auth = req.headers.get('Authorization')!;
+
+          const userId = auth.replace('access_token-id:', '');
+
+          if (!this.database.users.find((user) => user.id === userId)) {
+            return res(
+              ctx.status(401),
+              ctx.json({
+                statusCode: 401,
+                body: {
+                  name: 'Error',
+                  message: 'user does not exists',
+                },
+              })
+            );
+          }
+
+          this.database.notes = this.database.notes.map((note) => {
+            if (note.id === id) {
+              note.finished = finished;
+              note.updatedAt = new Date().toISOString();
+            }
+            return note;
+          });
+
+          return res(
+            ctx.status(200),
+            ctx.json({
+              statusCode: 200,
+              body: this.database.notes.find((note) => note.id === id),
+            })
+          );
+        }
+      ),
+      rest.delete(
+        `${this.baseUrl}/api/V1/delete-note`,
+        async (req, res, ctx) => {
+          const { id } = await req.json();
+
+          const auth = req.headers.get('Authorization')!;
+
+          const userId = auth.replace('access_token-id:', '');
+
+          if (!this.database.users.find((user) => user.id === userId)) {
+            res(
+              ctx.status(401),
+              ctx.json({
+                statusCode: 401,
+                body: {
+                  name: 'Error',
+                  message: 'user does not exists',
+                },
+              })
+            );
+          }
+
+          const foundNote = this.database.notes.find((note) => note.id === id);
+
+          if (!foundNote?.finished) {
+            res(
+              ctx.status(400),
+              ctx.json({
+                statusCode: 400,
+                body: {
+                  name: 'Error',
+                  message: 'not does not exists OR not finished',
+                },
+              })
+            );
+          }
+
+          this.database.notes = this.database.notes.filter(
+            (note) => note.id !== id
+          );
+
+          return res(ctx.status(204));
+        }
+      )
     );
   }
 
@@ -126,6 +268,18 @@ export class MockServer {
 
   public addUserToCollection(user: User): void {
     this.database.users.push(user);
+  }
+
+  public addNoteToCollection(note: Note, userId: string): void {
+    this.database.notes.push({
+      id: note.id,
+      finished: note.finished,
+      title: note.title,
+      description: note.description,
+      updatedAt: note.timestamp,
+      createdAt: note.timestamp,
+      userId,
+    });
   }
 
   public eraseUsersCollection(): void {
