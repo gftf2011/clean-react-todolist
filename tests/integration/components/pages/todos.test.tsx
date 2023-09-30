@@ -318,6 +318,27 @@ describe('FEATURE - Todos Page', () => {
       expect(getByText('/', { exact: true })).toBeInTheDocument();
     });
 
+    it('GIVEN user is in todos page WHEN there is cached session AND session is not valid THEN must redirect to "/sign-in" page', async () => {
+      const user = UserBuilder.user().build();
+
+      mockServer.addUserToCollection(user);
+
+      storage.set(Storage.KEYS.ACCESS_TOKEN, {
+        accessToken: `access_token-id:fake_id`,
+      });
+
+      renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
+
+      /**
+       *  Must wait for loading component to render the page
+       * */
+      await sleep(200);
+
+      const { getByText } = within(screen.getByTestId('location-display'));
+
+      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
+    });
+
     it('GIVEN user is in todos page WHEN there is no cached session THEN must redirect to "/sign-in" page', () => {
       renderWithProviders(<Sut routes={routes} initialEntries={['/todos']} />);
 
