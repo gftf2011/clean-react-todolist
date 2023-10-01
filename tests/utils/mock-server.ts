@@ -270,7 +270,61 @@ export class MockServer {
 
           return res(ctx.status(204));
         }
-      )
+      ),
+      rest.post(`${this.baseUrl}/api/V1/create-note`, async (req, res, ctx) => {
+        const auth = req.headers.get('Authorization')!;
+        const userId = auth.replace('access_token-id:', '');
+
+        const { title, description } = await req.json();
+
+        if (!title || !description) {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              statusCode: 400,
+              body: {
+                name: 'Error',
+                message: 'missing request body element',
+              },
+            })
+          );
+        }
+
+        if (!this.database.users.find((user) => user.id === userId)) {
+          return res(
+            ctx.status(401),
+            ctx.json({
+              statusCode: 401,
+              body: {
+                name: 'Error',
+                message: 'user does not exists',
+              },
+            })
+          );
+        }
+
+        const date = new Date().toISOString();
+
+        const note = {
+          id: v4(),
+          title,
+          description,
+          finished: false,
+          userId,
+          createdAt: date,
+          updatedAt: date,
+        };
+
+        this.database.notes.push(note);
+
+        return res(
+          ctx.status(201),
+          ctx.json({
+            statusCode: 201,
+            body: note,
+          })
+        );
+      })
     );
   }
 

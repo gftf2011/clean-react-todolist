@@ -37,14 +37,6 @@ type Props = {
   children: any;
 };
 
-// const sleep = (timeout: number): Promise<void> => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve();
-//     }, timeout);
-//   });
-// };
-
 const ElementWrapper: React.FC<Props> = ({ children }) => {
   const location = useLocation();
 
