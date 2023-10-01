@@ -30,7 +30,7 @@ import { UserBuilder, NoteBuilder } from '@/tests/builders';
 import {
   resizeScreenSize,
   renderWithProviders,
-  MockServer,
+  MockServerFacade as MockServer,
 } from '@/tests/utils';
 
 type Props = {

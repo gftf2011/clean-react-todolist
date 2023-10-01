@@ -9,7 +9,7 @@ type Database = {
   notes: any[];
 };
 
-export class MockServer {
+export class MockServerFacade {
   private server!: SetupServer;
 
   private database!: Database;

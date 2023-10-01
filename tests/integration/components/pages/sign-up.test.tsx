@@ -31,7 +31,10 @@ import { LocalStorage } from '@/infra/gateways/local-storage';
 
 import { makeSignUp } from '@/main/factories/presentation/pages';
 
-import { resizeScreenSize, MockServer } from '@/tests/utils';
+import {
+  resizeScreenSize,
+  MockServerFacade as MockServer,
+} from '@/tests/utils';
 
 type Props = {
   children: any;
