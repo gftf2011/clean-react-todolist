@@ -5,10 +5,15 @@
 <br/>
 
 <div align="center">
-  <a href="#page_facing_up-about">About</a> •
+  <a href="#page_facing_up-about">About</a> • 
   <a href="#hammer_and_wrench-supported-os">Supported OS</a> • 
-  <a href="#large_blue_diamond-design-patterns">Design Patterns</a> •
-  <a href="#blue_book-principles">Principles</a> •
+  <a href="#robot-technologies">Technologies</a> • 
+  <a href="#large_orange_diamond-concepts">Concepts</a> • 
+  <a href="#large_blue_diamond-design-patterns">Design Patterns</a> • 
+  <a href="#blue_book-principles">Principles</a> • 
+  <a href="#clipboard-required-tools">Required Tools</a> • 
+  <a href="#racing_car-running-project">Running Project</a> • 
+  <a href="#test_tube-running-tests">Running Tests</a> • 
   <a href="#memo-license">License</a>
 </div>
 
@@ -33,6 +38,40 @@ The objective from this project is to show how to create an WEB APP with a well-
 - [x] Mac OS
 - [x] Linux
 - [x] Windows - WSL 
+
+<br/>
+
+## :robot: Technologies
+
+- React.JS
+- React Router Dom
+- React Redux
+- React Testing Library
+- Vite
+- Vitest
+- Eslint
+- Prettier
+- Github Action
+
+<br/>
+
+## :large_orange_diamond: Concepts
+
+- Advanced Object Oriented Programming
+- Functional Programming
+- Redux
+- Clean Code
+- Clean Architecture
+- Design Patterns - (Object Oriented)
+- Design Patterns - (Functional Style)
+- Unit Testing
+- Integration Testing
+- Continuous Integration Pipeline
+- Semantic Commits
+- Test Doubles - (Dummies • Stubs • Spies • Fakes • Mocks)
+- Linting
+- Browser Cache
+- Cache Validation
 
 <br/>
 
@@ -73,6 +112,42 @@ The objective from this project is to show how to create an WEB APP with a well-
 - [You Aren't Gonna Need It (YAGNI)](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)
 - [Keep It Simple, Stupid (KISS)](https://en.wikipedia.org/wiki/KISS_principle)
 - [Composition Over Inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance)
+
+<br/>
+
+## :clipboard: Required Tools
+
+- [x] Node - [https://nodejs.org/](https://nodejs.org/)
+  - Node version: 18.x.x
+  - npm version: 9.x.x
+
+<br/>
+
+## :racing_car: Running Project
+
+```sh
+  $ npm i
+```
+
+```sh
+  $ npm run dev
+```
+
+```sh
+  $ npm run dev:server
+```
+
+> #### OBS.: Use 2 Terminals, one to run the development server first and the second to run the application
+
+<br/>
+
+## :test_tube: Running Tests
+
+> ### Full Test Coverage Report
+
+```sh
+  $ npm run test
+```
 
 <br/>
 
