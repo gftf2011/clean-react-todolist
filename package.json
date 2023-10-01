@@ -1,7 +1,9 @@
 {
   "name": "clean-react-todolist",
-  "private": true,
   "version": "1.0.0",
+  "keywords": ["nodejs", "javascript", "reactjs", "typescript", "rest", "test", "rest-api", "clean-code", "design-patterns", "clean-architecture", "github-actions"],
+  "author": "Gabriel Ferrari Tarallo Ferraz",
+  "description": "React.Js WEB APP built with Clean Architecture and Design Patterns that consumes a REST API server response",
   "type": "module",
   "scripts": {
     "dev:server": "node server/server.js",
