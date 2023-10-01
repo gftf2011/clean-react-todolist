@@ -29,6 +29,8 @@ export default defineConfig({
         'src/domain/use-cases/**/*.ts',
         'src/presentation/assets/**',
         'src/presentation/styles/**',
+        'src/presentation/contracts/validation/**/*.ts',
+        'src/presentation/validation/contracts/**/*.ts',
       ],
     },
   },

@@ -210,19 +210,31 @@ export class MockServer {
             );
           }
 
+          const date = new Date().toISOString();
+
           this.database.notes = this.database.notes.map((note) => {
             if (note.id === id) {
               note.finished = finished;
-              note.updatedAt = new Date().toISOString();
+              note.updatedAt = date;
             }
             return note;
           });
+
+          const foundNote = this.database.notes.find((note) => note.id === id);
+
+          const mappedNote = {
+            id,
+            title: foundNote.title,
+            description: foundNote.description,
+            finished,
+            timestamp: date,
+          };
 
           return res(
             ctx.status(200),
             ctx.json({
               statusCode: 200,
-              body: this.database.notes.find((note) => note.id === id),
+              body: mappedNote,
             })
           );
         }
@@ -317,11 +329,94 @@ export class MockServer {
 
         this.database.notes.push(note);
 
+        const mappedNote = {
+          id: note.id,
+          title: note.title,
+          description: note.description,
+          finished: false,
+          timestamp: date,
+        };
+
         return res(
           ctx.status(201),
           ctx.json({
             statusCode: 201,
-            body: note,
+            body: mappedNote,
+          })
+        );
+      }),
+      rest.put(`${this.baseUrl}/api/V1/update-note`, async (req, res, ctx) => {
+        const auth = req.headers.get('Authorization')!;
+        const userId = auth.replace('access_token-id:', '');
+
+        const { id, title, description } = await req.json();
+
+        if (!title || !description) {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              statusCode: 400,
+              body: {
+                name: 'Error',
+                message: 'missing request body element',
+              },
+            })
+          );
+        }
+
+        if (!this.database.users.find((user) => user.id === userId)) {
+          return res(
+            ctx.status(401),
+            ctx.json({
+              statusCode: 401,
+              body: {
+                name: 'Error',
+                message: 'user does not exists',
+              },
+            })
+          );
+        }
+
+        const foundNote = this.database.notes.find((note) => note.id === id);
+
+        if (!foundNote) {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              statusCode: 400,
+              body: {
+                name: 'Error',
+                message: 'note does not exists',
+              },
+            })
+          );
+        }
+
+        const date = new Date().toISOString();
+
+        this.database.notes = this.database.notes.map((note) => {
+          if (note.id === id) {
+            note.title = title;
+            note.description = description;
+            note.finished = foundNote.finished;
+            note.updatedAt = date;
+          }
+          return note;
+        });
+
+        const mappedNote = {
+          id,
+          title,
+          description,
+          finished: foundNote.finished,
+          timestamp: date,
+        };
+
+        return res(
+          ctx.status(200),
+          ctx.json({
+            statusCode: 200,
+            body: mappedNote,
           })
         );
       })

@@ -165,9 +165,17 @@ server.post('/api/V1/create-note', (req, _res, next) => {
 
   database.notes.push(note);
 
+  const mappedNote = {
+    id: note.id,
+    title: note.title,
+    description: note.description,
+    finished: false,
+    timestamp: date,
+  }
+
   return res.status(201).json({
     statusCode: 201,
-    body: note,
+    body: mappedNote,
   });
 });
 
@@ -187,17 +195,29 @@ server.patch('/api/V1/update-finished-note', (req, _res, next) => {
     });
   }
 
+  const date = new Date().toISOString();
+
   database.notes = database.notes.map((note) => {
     if (note.id === id) {
       note.finished = finished;
-      note.updatedAt = new Date().toISOString();
+      note.updatedAt = date;
     }
     return note;
   });
 
+  const note = database.notes.find(note => note.id === id);
+
+  const mappedNote = {
+    id,
+    title: note.title,
+    description: note.description,
+    finished,
+    timestamp: date,
+  };
+
   return res.status(200).json({
     statusCode: 200,
-    body: database.notes.find(note => note.id === id),
+    body: mappedNote,
   });
 });
 
@@ -232,6 +252,70 @@ server.delete('/api/V1/delete-note', (req, _res, next) => {
   database.notes = database.notes.filter((note) => note.id !== id);
 
   return res.status(204).end();
+});
+
+server.put('/api/V1/update-note', (req, _res, next) => {
+  req.headers.userId = req.headers.authorization.replace('access_token-id:', '');
+  next();
+}, (req, res) => {
+  const { id, title, description } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).json({
+      statusCode: 400,
+      body: {
+        name: 'Error',
+        message: 'missing request body element',
+      },
+    });
+  }
+
+  if (!database.users.find((user) => user.id === req.headers.userId)) {
+    return res.status(401).json({
+      statusCode: 401,
+      body: {
+        name: 'Error',
+        message: 'user does not exists',
+      },
+    });
+  }
+
+  const foundNote = database.notes.find(note => note.id === id);
+
+  if (!foundNote) {
+    return res.status(400).json({
+      statusCode: 400,
+      body: {
+        name: 'Error',
+        message: 'note does not exists',
+      },
+    });
+  }
+
+  const date = new Date().toISOString();
+
+  database.notes = database.notes.map((note) => {
+    if (note.id === id) {
+      note.title = title;
+      note.description = description;
+      note.finished = foundNote.finished;
+      note.updatedAt = date;
+    }
+    return note;
+  });
+
+  const mappedNote = {
+    id,
+    title,
+    description,
+    finished: foundNote.finished,
+    timestamp: date,
+  };
+
+  return res.status(200).json({
+    statusCode: 200,
+    body: mappedNote,
+  });
 });
 
 server.listen(3000, () => {

@@ -30,9 +30,9 @@ import { Storage } from '@/use-cases/ports/gateways';
 
 import { LocalStorage } from '@/infra/gateways/local-storage';
 
-import { makeAddTodo } from '@/main/factories/presentation/pages';
+import { makeEditTodo, makeTodos } from '@/main/factories/presentation/pages';
 
-import { UserBuilder } from '@/tests/builders';
+import { UserBuilder, NoteBuilder } from '@/tests/builders';
 import {
   resizeScreenSize,
   renderWithProviders,
@@ -68,7 +68,7 @@ const Sut: React.FC<{ routes: any[]; initialEntries: string[] }> = ({
   );
 };
 
-describe('FEATURE - Add Todo Page', () => {
+describe('FEATURE - Edit Todo Page', () => {
   const storage = LocalStorage.getInstance();
   const mockServer = new MockServer(import.meta.env.VITE_BASE_URL);
 
@@ -91,15 +91,11 @@ describe('FEATURE - Add Todo Page', () => {
     },
     {
       path: '/todos',
-      element: (
-        <ElementWrapper>
-          <></>
-        </ElementWrapper>
-      ),
+      element: makeTodos({}),
     },
     {
-      path: '/add-todo',
-      element: makeAddTodo({}),
+      path: '/edit-todo/:id',
+      element: makeEditTodo({}),
     },
   ];
 
@@ -112,20 +108,28 @@ describe('FEATURE - Add Todo Page', () => {
       resizeScreenSize(1200);
     });
 
-    it('GIVEN user is in "/add-todo" page WHEN page loads THEN must show form with elements AND empty inputs', async () => {
+    it('GIVEN user is in "/todos" page AND goes to "/edit-todo/:id" WHEN page loads THEN must show form with elements AND filled inputs', async () => {
+      const userSimulator = userEvent.setup();
+
       const user = UserBuilder.user().build();
+      const note = NoteBuilder.note().build();
 
       mockServer.addUserToCollection(user);
+      mockServer.addNoteToCollection(note, user.id);
 
       storage.set(Storage.KEYS.ACCESS_TOKEN, {
         accessToken: `access_token-id:${user.id}`,
       });
 
       const app = await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
+        renderWithProviders(<Sut routes={routes} initialEntries={[`/todos`]} />)
       );
+
+      const todoCardEditLink = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      ).querySelector('div')!;
+
+      await userSimulator.click(todoCardEditLink);
 
       const formTitle: any = app.container
         .querySelector('form')!
@@ -144,31 +148,37 @@ describe('FEATURE - Add Todo Page', () => {
         .querySelector('button[type="submit"]')!;
 
       expect(
-        within(formTitle).getByText('Create Task', { exact: true })
+        within(formTitle).getByText('Edit Task', { exact: true })
       ).toBeInTheDocument();
-      expect(titleInput.value).toBe('');
-      expect(descriptionTextArea.value).toBe('');
+      expect(titleInput.value).toBe(note.title);
+      expect(descriptionTextArea.value).toBe(note.description);
       expect(
-        within(submitButton).getByText('Save', { exact: true })
+        within(submitButton).getByText('Edit', { exact: true })
       ).toBeInTheDocument();
     });
 
-    it('GIVEN user is in "/add-todo" page WHEN inputs are filled correctly AND submit button is pressed THEN must redirect to "/todos" page', async () => {
+    it('GIVEN user is in "/todos" page AND goes to "/edit-todo/:id" WHEN inputs are filled correctly AND submit button is pressed THEN must redirect to "/todos" page AND todo card must show new title and description', async () => {
       const userSimulator = userEvent.setup();
 
       const user = UserBuilder.user().build();
+      const note = NoteBuilder.note().build();
 
       mockServer.addUserToCollection(user);
+      mockServer.addNoteToCollection(note, user.id);
 
       storage.set(Storage.KEYS.ACCESS_TOKEN, {
         accessToken: `access_token-id:${user.id}`,
       });
 
       const app = await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
+        renderWithProviders(<Sut routes={routes} initialEntries={[`/todos`]} />)
       );
+
+      const todoCardEditLink = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      ).querySelector('div')!;
+
+      await userSimulator.click(todoCardEditLink);
 
       const titleInput: any = app.container
         .querySelector('form')!
@@ -187,29 +197,59 @@ describe('FEATURE - Add Todo Page', () => {
 
       await userSimulator.click(submitButton);
 
-      const { getByText } = within(
-        await screen.findByTestId('location-display')
-      );
+      const todoCardTitle = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      )
+        .querySelector('div')!
+        .querySelector('h3')!;
 
-      expect(getByText('/todos', { exact: true })).toBeInTheDocument();
+      const todoCardDescription = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      )
+        .querySelector('div')!
+        .querySelector('small')!;
+
+      expect(
+        within(todoCardTitle).getByText('Test', { exact: true })
+      ).toBeInTheDocument();
+      expect(
+        within(todoCardDescription).getByText('Test', { exact: true })
+      ).toBeInTheDocument();
     });
 
-    it('GIVEN user is in "/add-todo" page WHEN inputs are empty AND submit button is pressed THEN must show modal error', async () => {
+    it('GIVEN user is in "/todos" page AND goes to "/edit-todo/:id" WHEN inputs are filled incorrectly AND submit button is pressed THEN must show popup error', async () => {
       const userSimulator = userEvent.setup();
 
       const user = UserBuilder.user().build();
+      const note = NoteBuilder.note().build();
 
       mockServer.addUserToCollection(user);
+      mockServer.addNoteToCollection(note, user.id);
 
       storage.set(Storage.KEYS.ACCESS_TOKEN, {
         accessToken: `access_token-id:${user.id}`,
       });
 
       const app = await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
+        renderWithProviders(<Sut routes={routes} initialEntries={[`/todos`]} />)
       );
+
+      const todoCardEditLink = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      ).querySelector('div')!;
+
+      await userSimulator.click(todoCardEditLink);
+
+      const titleInput: any = app.container
+        .querySelector('form')!
+        .querySelector('input')!;
+
+      const descriptionTextArea: any = app.container
+        .querySelector('form')!
+        .querySelector('textarea')!;
+
+      fireEvent.change(titleInput, { target: { value: '' } });
+      fireEvent.change(descriptionTextArea, { target: { value: '' } });
 
       const submitButton: any = app.container
         .querySelector('form')!
@@ -218,28 +258,45 @@ describe('FEATURE - Add Todo Page', () => {
       await userSimulator.click(submitButton);
 
       const errorModal = await screen.findByText(
-        'required field is missing, send informations again'
+        'please, check if note information are correct or if note exists'
       )!;
 
       expect(errorModal).toBeInTheDocument();
     });
 
-    it('GIVEN user is in "/add-todo" page WHEN inputs are empty AND submit button is pressed THEN must show modal error AND close it', async () => {
+    it('GIVEN user is in "/todos" page AND goes to "/edit-todo/:id" WHEN inputs are filled incorrectly AND submit button is pressed THEN must show popup error AND close it', async () => {
       const userSimulator = userEvent.setup();
 
       const user = UserBuilder.user().build();
+      const note = NoteBuilder.note().build();
 
       mockServer.addUserToCollection(user);
+      mockServer.addNoteToCollection(note, user.id);
 
       storage.set(Storage.KEYS.ACCESS_TOKEN, {
         accessToken: `access_token-id:${user.id}`,
       });
 
       const app = await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
+        renderWithProviders(<Sut routes={routes} initialEntries={[`/todos`]} />)
       );
+
+      const todoCardEditLink = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      ).querySelector('div')!;
+
+      await userSimulator.click(todoCardEditLink);
+
+      const titleInput: any = app.container
+        .querySelector('form')!
+        .querySelector('input')!;
+
+      const descriptionTextArea: any = app.container
+        .querySelector('form')!
+        .querySelector('textarea')!;
+
+      fireEvent.change(titleInput, { target: { value: '' } });
+      fireEvent.change(descriptionTextArea, { target: { value: '' } });
 
       const submitButton: any = app.container
         .querySelector('form')!
@@ -255,60 +312,10 @@ describe('FEATURE - Add Todo Page', () => {
 
       const errorModal = async () =>
         screen.findByText(
-          'required field is missing, send informations again'
+          'please, check if note information are correct or if note exists'
         )!;
 
       await expect(errorModal).rejects.toThrow();
-    });
-
-    it('GIVEN user is in "/add-todo" page WHEN there is no cached session THEN must redirect to "/sign-in" page', async () => {
-      await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
-      );
-
-      const { getByText } = within(screen.getByTestId('location-display'));
-
-      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
-    });
-
-    it('GIVEN user is in "/add-todo" page WHEN there is cached session AND user is not in database THEN must redirect to "/sign-in" page', async () => {
-      const userSimulator = userEvent.setup();
-      const users = [UserBuilder.user().build(), UserBuilder.user().build()];
-
-      mockServer.addUserToCollection(users[0]);
-
-      storage.set(Storage.KEYS.ACCESS_TOKEN, {
-        accessToken: `access_token-id:${users[1].id}`,
-      });
-
-      const app = await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
-      );
-
-      const titleInput: any = app.container
-        .querySelector('form')!
-        .querySelector('input')!;
-
-      const descriptionTextArea: any = app.container
-        .querySelector('form')!
-        .querySelector('textarea')!;
-
-      fireEvent.change(titleInput, { target: { value: 'Test' } });
-      fireEvent.change(descriptionTextArea, { target: { value: 'Test' } });
-
-      const submitButton: any = app.container
-        .querySelector('form')!
-        .querySelector('button[type="submit"]')!;
-
-      await userSimulator.click(submitButton);
-
-      const { getByText } = within(screen.getByTestId('location-display'));
-
-      expect(getByText('/sign-in', { exact: true })).toBeInTheDocument();
     });
 
     afterEach(() => {
@@ -323,22 +330,28 @@ describe('FEATURE - Add Todo Page', () => {
       resizeScreenSize(768);
     });
 
-    it('GIVEN user is in "/add-todo" page WHEN there is cached session AND user clicks in log-out button THEN must redirect to home page', async () => {
+    it('GIVEN user is in "/add-todo" page AND goes to "/edit-todo/:id" page WHEN there is cached session AND user clicks in log-out button THEN must redirect to home page', async () => {
       const userSimulator = userEvent.setup();
 
       const user = UserBuilder.user().build();
+      const note = NoteBuilder.note().build();
 
       mockServer.addUserToCollection(user);
+      mockServer.addNoteToCollection(note, user.id);
 
       storage.set(Storage.KEYS.ACCESS_TOKEN, {
         accessToken: `access_token-id:${user.id}`,
       });
 
       const app = await act(async () =>
-        renderWithProviders(
-          <Sut routes={routes} initialEntries={['/add-todo']} />
-        )
+        renderWithProviders(<Sut routes={routes} initialEntries={[`/todos`]} />)
       );
+
+      const todoCardEditLink = (
+        await screen.findByTestId(`${note.id}-todo-card-wrap`)!
+      ).querySelector('div')!;
+
+      await userSimulator.click(todoCardEditLink);
 
       const dropdownButton = app.container
         .querySelector('header')!

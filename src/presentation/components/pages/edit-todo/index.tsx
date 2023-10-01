@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { Note } from '@/domain/models';
@@ -28,7 +28,6 @@ export const EditTodoPage: React.FC<Props> = ({
   updateNoteUseCase,
 }) => {
   const query = useQuery();
-  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
@@ -39,7 +38,7 @@ export const EditTodoPage: React.FC<Props> = ({
     (state: RootState) => state.currentNote.value.description
   );
 
-  const noteId = searchParams.get('id');
+  const { id: noteId } = useParams();
   const page = query.get('page');
   const [title, setTitle] = useState<string>(currentTitle);
   const [description, setDescription] = useState<string>(currentDescription);
@@ -92,7 +91,7 @@ export const EditTodoPage: React.FC<Props> = ({
     const operationSuccess = (note: Note): void => {
       (updateNoteUseCase as any).accept(
         new RevalidateCacheNotesVisitor({
-          page: Number(page!),
+          page: Number(page!) - 1,
           note,
           storage,
         })
