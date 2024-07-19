@@ -5,6 +5,12 @@
 <br/>
 
 <div align="center">
+  <img src='https://coveralls.io/repos/github/gftf2011/clean-react-todolist/badge.svg?branch=main' alt='Coverage Status' />
+</div>
+
+<br/>
+
+<div align="center">
   <a href="#page_facing_up-about">About</a> • 
   <a href="#hammer_and_wrench-supported-os">Supported OS</a> • 
   <a href="#robot-technologies">Technologies</a> • 
