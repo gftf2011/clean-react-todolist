@@ -84,3 +84,32 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache Coverage Report
+        uses: actions/cache@v3.2.3
+        with:
+          path: ./coverage
+          key: coverage-app-cache-key.${{ github.ref }}.${{ github.sha }}
+
+  analyze-code:
+    runs-on: ubuntu-latest
+    needs: test-and-lint
+    if: ${{ (github.ref == 'refs/heads/release' || github.ref == 'refs/heads/main') }}
+    name: Sonar Cloud Scan
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Cached Coveraged Report
+        uses: actions/cache@v3.2.3
+        with:
+          path: ./coverage
+          key: coverage-app-cache-key.${{ github.ref }}.${{ github.sha }}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
