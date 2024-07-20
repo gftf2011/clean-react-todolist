@@ -10,7 +10,7 @@ import {
 } from '@/use-cases/errors';
 
 export class CreateNoteUseCaseImpl implements CreateNoteUseCase {
-  type?: string | undefined = 'create';
+  type?: string = 'create';
 
   constructor(
     private readonly url: string,
