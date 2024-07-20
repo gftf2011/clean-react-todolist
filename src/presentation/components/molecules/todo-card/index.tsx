@@ -64,7 +64,7 @@ export const TodoCard: React.FC<Props> = (props) => {
           onChange={onChange}
         />
       </CheckboxWrapper>
-      <div onClick={onSelect} role="link" className={isChecked ? 'shrink' : ''}>
+      <div tabIndex={0} onClick={onSelect} role="link" className={isChecked ? 'shrink' : ''}>
         <h3>{props.todo.title}</h3>
         <small>{props.todo.description}</small>
       </div>
